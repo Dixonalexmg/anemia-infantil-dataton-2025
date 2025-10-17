@@ -1,0 +1,111 @@
+{
+  "fecha_generacion": "2025-10-10 18:49:53",
+  "periodo_analizado": {
+    "inicio": "2025-01",
+    "fin": "2025-06",
+    "n_meses": 6
+  },
+  "estadisticas_serie": {
+    "prevalencia_promedio_pct": 11.9144437331914,
+    "desviacion_estandar_pp": 2.221508922376951,
+    "prevalencia_minima_pct": 9.990362993896563,
+    "prevalencia_maxima_pct": 16.29861876904099,
+    "variacion_absoluta_pp": 5.348357776751415,
+    "variacion_relativa_pct": 48.84228586439505
+  },
+  "tendencia_nacional": {
+    "pendiente_pp_mes": 2.197726010364605,
+    "r_cuadrado": 0.6610411907447897,
+    "significancia": "baja"
+  },
+  "proyecciones_3_meses": {
+    "modelo_ses_pct": [
+      13.710844329322825,
+      13.710844329322825,
+      13.710844329322825
+    ],
+    "modelo_holt_winters_pct": [
+      14.564200950731923,
+      15.321274462675,
+      16.078347974618076
+    ],
+    "modelo_lineal_pct": [
+      14.564208214898466,
+      15.321283781100487,
+      16.078359347302506
+    ],
+    "ensamble_pct": [
+      14.279751164984404,
+      14.784467524366102,
+      15.289183883747802
+    ],
+    "periodos": [
+      "2025-07",
+      "2025-08",
+      "2025-09"
+    ]
+  },
+  "departamentos_alerta": {
+    "tendencia_creciente_rapida": [
+      {
+        "departamento": "UCAYALI",
+        "tendencia_pp_mes": 2.197726010364605
+      },
+      {
+        "departamento": "PASCO",
+        "tendencia_pp_mes": 1.987199264629556
+      },
+      {
+        "departamento": "ANCASH",
+        "tendencia_pp_mes": 1.6965032305103738
+      },
+      {
+        "departamento": "TUMBES",
+        "tendencia_pp_mes": 1.3206446792925264
+      },
+      {
+        "departamento": "JUNIN",
+        "tendencia_pp_mes": 1.2505420014827602
+      }
+    ],
+    "tendencia_decreciente_rapida": [
+      {
+        "departamento": "AYACUCHO",
+        "tendencia_pp_mes": 0.34538282908507256
+      },
+      {
+        "departamento": "HUANUCO",
+        "tendencia_pp_mes": 0.32712804585998034
+      },
+      {
+        "departamento": "SAN MARTIN",
+        "tendencia_pp_mes": 0.3114743599727787
+      },
+      {
+        "departamento": "CAJAMARCA",
+        "tendencia_pp_mes": 0.09769609875854117
+      },
+      {
+        "departamento": "TACNA",
+        "tendencia_pp_mes": -0.8554159563488803
+      }
+    ]
+  },
+  "escenarios_intervencion": {
+    "sin_intervencion_6m_pct": 29.48497483122862,
+    "intervencion_baja_6m_pct": 27.68497483122862,
+    "intervencion_media_6m_pct": 25.884974831228618,
+    "intervencion_alta_6m_pct": 23.48497483122862,
+    "reduccion_necesaria_para_meta_pp": 21.48497483122862
+  },
+  "alertas": [
+    {
+      "tipo": "CRÍTICO",
+      "mensaje": "Incremento de 48.8% en el periodo analizado"
+    },
+    {
+      "tipo": "ADVERTENCIA",
+      "mensaje": "Tendencia creciente de +2.20 pp/mes"
+    }
+  ]
+}

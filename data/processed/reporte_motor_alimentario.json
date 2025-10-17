@@ -1,0 +1,129 @@
+{
+  "fecha_generacion": "2025-10-10 18:42:30",
+  "base_alimentos": {
+    "total_alimentos": 23,
+    "alimentos_hemo": 14,
+    "alimentos_no_hemo": 9,
+    "categorias": [
+      "visceras",
+      "carnes",
+      "aves",
+      "pescados",
+      "mariscos",
+      "huevos",
+      "menestras",
+      "verduras",
+      "granos"
+    ]
+  },
+  "top_5_mas_hierro": [
+    {
+      "nombre": "Sangrecita de pollo",
+      "hierro_mg_100g": 29.5
+    },
+    {
+      "nombre": "Bazo",
+      "hierro_mg_100g": 28.7
+    },
+    {
+      "nombre": "Hígado de pollo",
+      "hierro_mg_100g": 8.5
+    },
+    {
+      "nombre": "Lentejas",
+      "hierro_mg_100g": 7.6
+    },
+    {
+      "nombre": "Kiwicha",
+      "hierro_mg_100g": 7.6
+    }
+  ],
+  "top_5_mejor_costo_beneficio": [
+    {
+      "nombre": "Sangrecita de pollo",
+      "ratio_costo_beneficio": 84.29
+    },
+    {
+      "nombre": "Bazo",
+      "ratio_costo_beneficio": 63.78
+    },
+    {
+      "nombre": "Hígado de pollo",
+      "ratio_costo_beneficio": 14.17
+    },
+    {
+      "nombre": "Lentejas",
+      "ratio_costo_beneficio": 12.67
+    },
+    {
+      "nombre": "Frijol negro",
+      "ratio_costo_beneficio": 9.82
+    }
+  ],
+  "requerimientos_edad": [
+    {
+      "edad_min_meses": 6,
+      "edad_max_meses": 8,
+      "grupo_edad": "6-8m",
+      "hierro_mg_dia": 11,
+      "hierro_hemo_recomendado_pct": 0.3
+    },
+    {
+      "edad_min_meses": 9,
+      "edad_max_meses": 11,
+      "grupo_edad": "9-11m",
+      "hierro_mg_dia": 11,
+      "hierro_hemo_recomendado_pct": 0.4
+    },
+    {
+      "edad_min_meses": 12,
+      "edad_max_meses": 23,
+      "grupo_edad": "12-23m",
+      "hierro_mg_dia": 7,
+      "hierro_hemo_recomendado_pct": 0.5
+    },
+    {
+      "edad_min_meses": 24,
+      "edad_max_meses": 35,
+      "grupo_edad": "24-35m",
+      "hierro_mg_dia": 7,
+      "hierro_hemo_recomendado_pct": 0.5
+    },
+    {
+      "edad_min_meses": 36,
+      "edad_max_meses": 59,
+      "grupo_edad": "36-59m",
+      "hierro_mg_dia": 10,
+      "hierro_hemo_recomendado_pct": 0.6
+    }
+  ],
+  "ejemplos_menus": {
+    "menu_1": {
+      "descripcion": "Niño 12 meses sin anemia, S/ 10/día",
+      "archivo": "menu_ejemplo_12m_sin_anemia.csv",
+      "hierro_objetivo_mg": 7.0,
+      "hierro_promedio_dia": 17.67142857142857,
+      "costo_promedio_dia": 2.1214285714285714
+    },
+    "menu_2": {
+      "descripcion": "Niño 24 meses CON anemia, S/ 8/día",
+      "archivo": "menu_ejemplo_24m_con_anemia.csv",
+      "hierro_objetivo_mg": 9.1,
+      "hierro_promedio_dia": 18.114285714285714,
+      "costo_promedio_dia": 2.5785714285714287
+    },
+    "menu_3": {
+      "descripcion": "Niño 48 meses sin anemia, S/ 12/día",
+      "archivo": "menu_ejemplo_48m_sin_anemia.csv",
+      "hierro_objetivo_mg": 10.0,
+      "hierro_promedio_dia": 20.67142857142857,
+      "costo_promedio_dia": 3.292857142857143
+    }
+  },
+  "regiones": [
+    "Costa",
+    "Sierra",
+    "Selva"
+  ],
+  "disponibilidad_regional": "disponibilidad_regional.csv"
+}

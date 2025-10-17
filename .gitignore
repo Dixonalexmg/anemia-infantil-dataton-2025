@@ -1,0 +1,41 @@
+# .gitignore
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+build/
+dist/
+*.egg-info/
+
+# Jupyter
+.ipynb_checkpoints
+*.ipynb
+
+# Data (archivos grandes)
+data/raw/
+*.csv
+!data/processed/sien_muestra.csv
+*.xlsx
+*.dta
+
+# Models (solo si son muy grandes >100MB)
+# models/*.pkl
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Streamlit
+.streamlit/secrets.toml

@@ -1,0 +1,255 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": { "NOMBDEP": "AMAZONAS", "ID": "01" },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [-78.5, -3.5], [-77.5, -3.5], [-77.5, -6.5], [-78.5, -6.5], [-78.5, -3.5]
+        ]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": { "NOMBDEP": "ANCASH", "ID": "02" },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [-78.5, -8.5], [-77.0, -8.5], [-77.0, -10.5], [-78.5, -10.5], [-78.5, -8.5]
+        ]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": { "NOMBDEP": "APURIMAC", "ID": "03" },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [-73.5, -13.0], [-72.0, -13.0], [-72.0, -15.0], [-73.5, -15.0], [-73.5, -13.0]
+        ]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": { "NOMBDEP": "AREQUIPA", "ID": "04" },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [-73.5, -15.0], [-71.0, -15.0], [-71.0, -17.5], [-73.5, -17.5], [-73.5, -15.0]
+        ]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": { "NOMBDEP": "AYACUCHO", "ID": "05" },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [-75.0, -12.5], [-73.0, -12.5], [-73.0, -15.0], [-75.0, -15.0], [-75.0, -12.5]
+        ]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": { "NOMBDEP": "CAJAMARCA", "ID": "06" },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [-79.5, -5.0], [-77.5, -5.0], [-77.5, -7.5], [-79.5, -7.5], [-79.5, -5.0]
+        ]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": { "NOMBDEP": "CALLAO", "ID": "07" },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [-77.2, -11.9], [-76.9, -11.9], [-76.9, -12.1], [-77.2, -12.1], [-77.2, -11.9]
+        ]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": { "NOMBDEP": "CUSCO", "ID": "08" },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [-73.5, -11.5], [-71.0, -11.5], [-71.0, -14.5], [-73.5, -14.5], [-73.5, -11.5]
+        ]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": { "NOMBDEP": "HUANCAVELICA", "ID": "09" },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [-75.5, -12.0], [-74.5, -12.0], [-74.5, -13.5], [-75.5, -13.5], [-75.5, -12.0]
+        ]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": { "NOMBDEP": "HUANUCO", "ID": "10" },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [-77.0, -8.5], [-75.5, -8.5], [-75.5, -10.5], [-77.0, -10.5], [-77.0, -8.5]
+        ]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": { "NOMBDEP": "ICA", "ID": "11" },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [-76.5, -13.0], [-75.0, -13.0], [-75.0, -15.0], [-76.5, -15.0], [-76.5, -13.0]
+        ]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": { "NOMBDEP": "JUNIN", "ID": "12" },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [-76.5, -10.5], [-74.5, -10.5], [-74.5, -12.5], [-76.5, -12.5], [-76.5, -10.5]
+        ]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": { "NOMBDEP": "LA LIBERTAD", "ID": "13" },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [-79.5, -7.0], [-77.5, -7.0], [-77.5, -9.0], [-79.5, -9.0], [-79.5, -7.0]
+        ]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": { "NOMBDEP": "LAMBAYEQUE", "ID": "14" },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [-80.5, -5.5], [-79.0, -5.5], [-79.0, -7.0], [-80.5, -7.0], [-80.5, -5.5]
+        ]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": { "NOMBDEP": "LIMA", "ID": "15" },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [-77.5, -10.5], [-76.0, -10.5], [-76.0, -13.5], [-77.5, -13.5], [-77.5, -10.5]
+        ]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": { "NOMBDEP": "LORETO", "ID": "16" },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [-77.0, -1.0], [-73.0, -1.0], [-73.0, -7.0], [-77.0, -7.0], [-77.0, -1.0]
+        ]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": { "NOMBDEP": "MADRE DE DIOS", "ID": "17" },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [-71.5, -10.0], [-68.5, -10.0], [-68.5, -13.5], [-71.5, -13.5], [-71.5, -10.0]
+        ]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": { "NOMBDEP": "MOQUEGUA", "ID": "18" },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [-71.5, -16.5], [-70.0, -16.5], [-70.0, -18.0], [-71.5, -18.0], [-71.5, -16.5]
+        ]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": { "NOMBDEP": "PASCO", "ID": "19" },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [-76.5, -9.5], [-75.0, -9.5], [-75.0, -11.0], [-76.5, -11.0], [-76.5, -9.5]
+        ]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": { "NOMBDEP": "PIURA", "ID": "20" },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [-81.5, -3.5], [-79.0, -3.5], [-79.0, -6.5], [-81.5, -6.5], [-81.5, -3.5]
+        ]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": { "NOMBDEP": "PUNO", "ID": "21" },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [-71.0, -13.5], [-68.5, -13.5], [-68.5, -17.5], [-71.0, -17.5], [-71.0, -13.5]
+        ]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": { "NOMBDEP": "SAN MARTIN", "ID": "22" },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [-77.5, -5.5], [-75.5, -5.5], [-75.5, -8.5], [-77.5, -8.5], [-77.5, -5.5]
+        ]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": { "NOMBDEP": "TACNA", "ID": "23" },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [-71.0, -17.0], [-69.5, -17.0], [-69.5, -18.5], [-71.0, -18.5], [-71.0, -17.0]
+        ]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": { "NOMBDEP": "TUMBES", "ID": "24" },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [-81.0, -3.3], [-80.0, -3.3], [-80.0, -4.5], [-81.0, -4.5], [-81.0, -3.3]
+        ]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": { "NOMBDEP": "UCAYALI", "ID": "25" },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [-75.5, -7.5], [-73.0, -7.5], [-73.0, -11.5], [-75.5, -11.5], [-75.5, -7.5]
+        ]]
+      }
+    }
+  ]
+}

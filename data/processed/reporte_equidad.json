@@ -1,0 +1,64 @@
+{
+  "fecha_analisis": "2025-10-09 21:15:19",
+  "n_registros_analizados": 895982,
+  "indice_concentracion": -0.0773,
+  "interpretacion_concentracion": "Anemia concentrada en vulnerables",
+  "brecha_q4_q1": {
+    "prev_q4": 0.1409,
+    "prev_q1": 0.1009,
+    "brecha_pp": 0.04,
+    "razon": 1.4
+  },
+  "brecha_rural_urbano": {
+    "prev_rural": 0.148,
+    "prev_urbano": 0.0985,
+    "brecha_pp": 0.0495,
+    "razon": 1.5
+  },
+  "oaxaca_blinder": {
+    "brecha_total_pp": 4.94,
+    "componente_explicado_pp": -1.59,
+    "componente_no_explicado_pp": 6.54,
+    "pct_explicado": 32.3,
+    "pct_no_explicado": 132.3
+  },
+  "departamentos_mayor_brecha": [
+    {
+      "Departamento": "LAMBAYEQUE",
+      "Brecha_pct": 64.38999999999999
+    },
+    {
+      "Departamento": "ICA",
+      "Brecha_pct": 23.71
+    },
+    {
+      "Departamento": "MADRE DE DIOS",
+      "Brecha_pct": 23.3
+    },
+    {
+      "Departamento": "PIURA",
+      "Brecha_pct": 19.119999999999997
+    },
+    {
+      "Departamento": "SAN MARTIN",
+      "Brecha_pct": 17.61
+    }
+  ],
+  "departamentos_crisis_dual": [
+    {
+      "Departamento": "TACNA",
+      "Prev_Promedio": 0.19043113934315448,
+      "Brecha_pct": 14.38
+    }
+  ],
+  "efecto_altitud": {
+    "prev_baja_altitud": 0.1146,
+    "prev_alta_altitud": 0.1317,
+    "diferencia_pp": 1.71
+  },
+  "grupos_mayor_riesgo": {
+    "24-35m": 0.1454,
+    "12-23m": 0.1332,
+    "0-11m": 0.1261
+  }
+}

@@ -1,0 +1,35 @@
+{
+    "fecha_entrenamiento": "2025-10-08 19:58:52",
+    "registros_entrenamiento": 627545,
+    "registros_validacion": 134039,
+    "registros_test": 134398,
+    "variables_predictoras": 16,
+    "umbral_optimo": 0.5003296136856079,
+    "metricas_test": {
+        "auc_roc": 0.738459473313503,
+        "accuracy": 0.6874283843509577,
+        "balanced_accuracy": 0.6757836840548437,
+        "precision": 0.23009261217067703,
+        "recall": 0.6603556041021906,
+        "specificity": 0.6912117640074966,
+        "f1_score": 0.34127295250341055,
+        "npv": 0.935743479059515
+    },
+    "validacion_cruzada": {
+        "cv_mean": 0.736173105837205,
+        "cv_std": 0.0009807846502200824,
+        "cv_scores": [
+            0.7372411560217143,
+            0.7353024988813532,
+            0.7352472902923357,
+            0.7374829683256944,
+            0.7355916156649271
+        ]
+    },
+    "matriz_confusion": {
+        "tn": 81507,
+        "fp": 36412,
+        "fn": 5597,
+        "tp": 10882
+    }
+}

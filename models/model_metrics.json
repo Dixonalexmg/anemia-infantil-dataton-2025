@@ -1,0 +1,51 @@
+{
+  "model_type": "RandomForest_RealData",
+  "threshold": 0.8038788070237372,
+  "accuracy": 0.9812106229456966,
+  "roc_auc": 0.9986701787328048,
+  "recall_anemia": 0.8499908975059166,
+  "precision_anemia": 0.9962127273697124,
+  "f1_score_anemia": 0.917311328813989,
+  "top_features": [
+    {
+      "feature": "hemoglobina",
+      "importance": 0.48029524326957035
+    },
+    {
+      "feature": "hb_baja",
+      "importance": 0.18998404331291385
+    },
+    {
+      "feature": "altitud",
+      "importance": 0.08797242245036352
+    },
+    {
+      "feature": "area_urbana",
+      "importance": 0.05065637544802059
+    },
+    {
+      "feature": "area_rural",
+      "importance": 0.04797705985705096
+    },
+    {
+      "feature": "hb_muy_baja",
+      "importance": 0.03216358590827216
+    },
+    {
+      "feature": "edad_meses",
+      "importance": 0.016867283123519188
+    },
+    {
+      "feature": "altitud_muy_alta",
+      "importance": 0.0163569787768499
+    },
+    {
+      "feature": "edad_anos",
+      "importance": 0.016125705725174615
+    },
+    {
+      "feature": "rural_sin_cred",
+      "importance": 0.010815361621145957
+    }
+  ]
+}

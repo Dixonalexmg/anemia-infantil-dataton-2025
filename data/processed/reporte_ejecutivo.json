@@ -1,0 +1,41 @@
+{
+    "fecha_generacion": "2025-10-08 20:46:17",
+    "total_ninos_evaluados": 895982,
+    "departamentos_analizados": 25,
+    "distribucion_riesgo": {
+        "bajo": 254636,
+        "medio": 281550,
+        "alto": 219262,
+        "muy_alto": 140534
+    },
+    "probabilidad_promedio_nacional": 0.43951416015625,
+    "prevalencia_real_nacional": 0.12261407037194944,
+    "top_5_departamentos_riesgo": [
+        {
+            "departamento": "TACNA",
+            "prob_media": 0.5709400177001953
+        },
+        {
+            "departamento": "JUNIN",
+            "prob_media": 0.5282166600227356
+        },
+        {
+            "departamento": "AREQUIPA",
+            "prob_media": 0.5065587162971497
+        },
+        {
+            "departamento": "CAJAMARCA",
+            "prob_media": 0.49115440249443054
+        },
+        {
+            "departamento": "ANCASH",
+            "prob_media": 0.4903968870639801
+        }
+    ],
+    "archivos_generados": {
+        "mapa_interactivo": "/content/drive/MyDrive/DATATON_2025/visualizaciones/mapa_riesgo_anemia_peru.html",
+        "riesgo_por_diresa": "/content/drive/MyDrive/DATATON_2025/resultados/riesgo_por_diresa.csv",
+        "dashboard_sample": "/content/drive/MyDrive/DATATON_2025/resultados/dashboard_sample.csv",
+        "predicciones_completas": "/content/drive/MyDrive/DATATON_2025/resultados/predicciones_completas.csv"
+    }
+}

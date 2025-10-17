@@ -1,0 +1,29 @@
+{
+    "fecha_procesamiento": "2025-10-08 19:34:40",
+    "regiones_procesadas": 29,
+    "registros_totales": 895982,
+    "registros_modelo": 895982,
+    "prevalencia_original": 14.297943485471807,
+    "prevalencia_oms2024": 12.261407037194944,
+    "variables_modelo": [
+        "tiene_anemia",
+        "Dx_anemia_OMS2024",
+        "EdadMeses",
+        "sexo_numerico",
+        "grupo_edad",
+        "DepartamentoREN",
+        "ProvinciaREN",
+        "DistritoREN",
+        "AlturaREN",
+        "area_rural",
+        "alta_altitud",
+        "Hemoglobina_OMS2024",
+        "suplementacion_bin",
+        "cred_bin",
+        "cobertura_programas",
+        "Juntos_num",
+        "SIS_num",
+        "Qaliwarma_num",
+        "FechaAtencion"
+    ]
+}
