@@ -1,3 +1,7 @@
+# .streamlit/config.toml
+# Configuración de Streamlit para NutriSenseIA
+# Sistema de Anemia Infantil - Datatón 2025
+
 [theme]
 primaryColor = "#667eea"
 backgroundColor = "#FFFFFF"
@@ -10,15 +14,16 @@ headless = true
 enableCORS = false
 enableXsrfProtection = false
 maxUploadSize = 500
+port = 8501
 
 [browser]
 gatherUsageStats = false
-
-[server]
-headless = true
+serverAddress = "localhost"
 
 [client]
 showSidebarNavigation = false
+showErrorDetails = true
+toolbarMode = "minimal"
 
 [ui]
 hideTopBar = false
