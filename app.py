@@ -189,7 +189,6 @@ def mostrar_sidebar():
                 "🔍 Diagnóstico Individual",
                 "🍽️ Menús Personalizados",
                 "🔮 ¿Qué pasaría si...?",  # HU-03 - NUEVA
-                "📊 Dashboard Nacional",
                 "🗺️ Mapa Territorial",
                 "📈 Panel de Impacto",  # HU-03 Panel de Impacto - NUEVA
             ],
