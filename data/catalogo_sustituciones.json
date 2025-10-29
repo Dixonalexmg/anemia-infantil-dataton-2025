@@ -1,0 +1,209 @@
+{
+  "sangrecita": {
+    "hierro_mg": 29.5,
+    "costo_s": 4.50,
+    "sustitutos": [
+      {
+        "id": "higado_res",
+        "nombre": "Hígado de res",
+        "hierro_mg": 6.5,
+        "costo_s": 8.50,
+        "factor_conversion": 4.5,
+        "preparacion": "Saltado con cebolla",
+        "ventaja": "Sabor más suave y aceptado",
+        "desventaja": "Más caro (89% más) y menos hierro"
+      },
+      {
+        "id": "bazo",
+        "nombre": "Bazo",
+        "hierro_mg": 5.2,
+        "costo_s": 6.00,
+        "factor_conversion": 5.7,
+        "preparacion": "Saltado con verduras",
+        "ventaja": "Económico y nutritivo",
+        "desventaja": "Menos hierro que sangrecita"
+      }
+    ]
+  },
+  "lentejas": {
+    "hierro_mg": 3.3,
+    "costo_s": 2.50,
+    "sustitutos": [
+      {
+        "id": "frijoles",
+        "nombre": "Frijoles",
+        "hierro_mg": 2.5,
+        "costo_s": 2.80,
+        "factor_conversion": 1.3,
+        "preparacion": "Cocinar con ajo y comino",
+        "ventaja": "Similar valor nutricional",
+        "desventaja": "Poco menos de hierro",
+        "requiere_citrico": true,
+        "nota_citrico": "Agregar limón o naranja"
+      },
+      {
+        "id": "quinua",
+        "nombre": "Quinua",
+        "hierro_mg": 4.6,
+        "costo_s": 7.00,
+        "factor_conversion": 0.7,
+        "preparacion": "Cocinar como arroz",
+        "ventaja": "Más hierro y proteína completa",
+        "desventaja": "Más cara",
+        "requiere_citrico": true
+      }
+    ]
+  },
+  "higado_res": {
+    "hierro_mg": 6.5,
+    "costo_s": 8.50,
+    "sustitutos": [
+      {
+        "id": "sangrecita",
+        "nombre": "Sangrecita",
+        "hierro_mg": 29.5,
+        "costo_s": 4.50,
+        "factor_conversion": 0.22,
+        "preparacion": "Guiso con ají amarillo",
+        "ventaja": "Más hierro (4.5x) y más barato",
+        "desventaja": "Sabor fuerte"
+      },
+      {
+        "id": "bazo",
+        "nombre": "Bazo",
+        "hierro_mg": 5.2,
+        "costo_s": 6.00,
+        "factor_conversion": 1.25,
+        "preparacion": "Saltado con verduras",
+        "ventaja": "Similar en hierro y más económico",
+        "desventaja": "Textura diferente"
+      }
+    ]
+  },
+  "bazo": {
+    "hierro_mg": 5.2,
+    "costo_s": 6.00,
+    "sustitutos": [
+      {
+        "id": "higado_res",
+        "nombre": "Hígado de res",
+        "hierro_mg": 6.5,
+        "costo_s": 8.50,
+        "factor_conversion": 0.8,
+        "preparacion": "Saltado con cebolla",
+        "ventaja": "Más hierro y sabor conocido",
+        "desventaja": "Más caro"
+      },
+      {
+        "id": "sangrecita",
+        "nombre": "Sangrecita",
+        "hierro_mg": 29.5,
+        "costo_s": 4.50,
+        "factor_conversion": 0.18,
+        "preparacion": "Guiso con ají",
+        "ventaja": "Mucho más hierro y barato",
+        "desventaja": "Sabor fuerte"
+      }
+    ]
+  },
+  "espinaca": {
+    "hierro_mg": 2.7,
+    "costo_s": 3.50,
+    "sustitutos": [
+      {
+        "id": "lentejas",
+        "nombre": "Lentejas",
+        "hierro_mg": 3.3,
+        "costo_s": 2.50,
+        "factor_conversion": 0.82,
+        "preparacion": "Cocinar como menestra",
+        "ventaja": "Más hierro y barato",
+        "desventaja": "Preparación más larga",
+        "requiere_citrico": true
+      }
+    ]
+  },
+  "frijoles": {
+    "hierro_mg": 2.5,
+    "costo_s": 2.80,
+    "sustitutos": [
+      {
+        "id": "lentejas",
+        "nombre": "Lentejas",
+        "hierro_mg": 3.3,
+        "costo_s": 2.50,
+        "factor_conversion": 0.76,
+        "preparacion": "Cocinar con zanahoria",
+        "ventaja": "Más hierro y más barato",
+        "desventaja": "Ninguna",
+        "requiere_citrico": true
+      }
+    ]
+  },
+  "quinua": {
+    "hierro_mg": 4.6,
+    "costo_s": 7.00,
+    "sustitutos": [
+      {
+        "id": "lentejas",
+        "nombre": "Lentejas",
+        "hierro_mg": 3.3,
+        "costo_s": 2.50,
+        "factor_conversion": 1.4,
+        "preparacion": "Cocinar con verduras",
+        "ventaja": "Muy económico",
+        "desventaja": "Menos hierro",
+        "requiere_citrico": true
+      }
+    ]
+  },
+  "huevo": {
+    "hierro_mg": 1.2,
+    "costo_s": 7.50,
+    "sustitutos": [
+      {
+        "id": "lentejas",
+        "nombre": "Lentejas",
+        "hierro_mg": 3.3,
+        "costo_s": 2.50,
+        "factor_conversion": 0.36,
+        "preparacion": "Cocinar con comino",
+        "ventaja": "Más hierro y muy barato",
+        "desventaja": "Vegetariano",
+        "requiere_citrico": true
+      }
+    ]
+  },
+  "pescado_bonito": {
+    "hierro_mg": 1.2,
+    "costo_s": 12.00,
+    "sustitutos": [
+      {
+        "id": "huevo",
+        "nombre": "Huevo",
+        "hierro_mg": 1.2,
+        "costo_s": 7.50,
+        "factor_conversion": 1.0,
+        "preparacion": "Tortilla o sancochado",
+        "ventaja": "Mismo hierro, más barato",
+        "desventaja": "Menor omega-3"
+      }
+    ]
+  },
+  "cuy": {
+    "hierro_mg": 3.2,
+    "costo_s": 25.00,
+    "sustitutos": [
+      {
+        "id": "higado_res",
+        "nombre": "Hígado de res",
+        "hierro_mg": 6.5,
+        "costo_s": 8.50,
+        "factor_conversion": 0.5,
+        "preparacion": "Saltado con cebolla",
+        "ventaja": "Más hierro y mucho más barato",
+        "desventaja": "Menos tradicional"
+      }
+    ]
+  }
+}

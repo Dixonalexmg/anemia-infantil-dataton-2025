@@ -1,0 +1,127 @@
+{
+  "ingredientes": [
+    {
+      "id": "higado_res",
+      "nombre": "Hígado de res",
+      "categoria": "proteina_animal",
+      "hierro_mg_100g": 6.5,
+      "proteina_g_100g": 20.4,
+      "costo_s_kg": 8.50,
+      "porcion_std_g": 100,
+      "disponibilidad_regiones": ["LIMA", "AREQUIPA", "CUSCO", "LA LIBERTAD", "JUNIN"],
+      "estacionalidad": "todo_año",
+      "tipo_hierro": "hemo"
+    },
+    {
+      "id": "bazo",
+      "nombre": "Bazo de res",
+      "categoria": "proteina_animal",
+      "hierro_mg_100g": 5.2,
+      "proteina_g_100g": 18.3,
+      "costo_s_kg": 6.00,
+      "porcion_std_g": 100,
+      "disponibilidad_regiones": ["LIMA", "CUSCO", "PUNO", "AYACUCHO"],
+      "estacionalidad": "todo_año",
+      "tipo_hierro": "hemo"
+    },
+    {
+      "id": "sangrecita",
+      "nombre": "Sangrecita",
+      "categoria": "proteina_animal",
+      "hierro_mg_100g": 29.5,
+      "proteina_g_100g": 16.6,
+      "costo_s_kg": 4.50,
+      "porcion_std_g": 80,
+      "disponibilidad_regiones": ["LIMA", "JUNIN", "PUNO", "CUSCO", "HUANCAVELICA"],
+      "estacionalidad": "todo_año",
+      "tipo_hierro": "hemo"
+    },
+    {
+      "id": "lentejas",
+      "nombre": "Lentejas",
+      "categoria": "menestra",
+      "hierro_mg_100g": 3.3,
+      "proteina_g_100g": 9.0,
+      "costo_s_kg": 2.50,
+      "porcion_std_g": 150,
+      "requiere_citrico": true,
+      "disponibilidad_regiones": "todas",
+      "estacionalidad": "todo_año",
+      "tipo_hierro": "no_hemo"
+    },
+    {
+      "id": "frijoles",
+      "nombre": "Frijoles",
+      "categoria": "menestra",
+      "hierro_mg_100g": 2.5,
+      "proteina_g_100g": 8.7,
+      "costo_s_kg": 2.80,
+      "porcion_std_g": 150,
+      "requiere_citrico": true,
+      "disponibilidad_regiones": "todas",
+      "estacionalidad": "todo_año",
+      "tipo_hierro": "no_hemo"
+    },
+    {
+      "id": "espinaca",
+      "nombre": "Espinaca",
+      "categoria": "vegetal",
+      "hierro_mg_100g": 2.7,
+      "proteina_g_100g": 2.9,
+      "costo_s_kg": 3.50,
+      "porcion_std_g": 100,
+      "requiere_citrico": true,
+      "disponibilidad_regiones": ["LIMA", "AREQUIPA", "CUSCO", "JUNIN"],
+      "estacionalidad": "todo_año",
+      "tipo_hierro": "no_hemo"
+    },
+    {
+      "id": "quinua",
+      "nombre": "Quinua",
+      "categoria": "cereal",
+      "hierro_mg_100g": 4.6,
+      "proteina_g_100g": 14.1,
+      "costo_s_kg": 7.00,
+      "porcion_std_g": 100,
+      "disponibilidad_regiones": ["PUNO", "CUSCO", "AYACUCHO", "JUNIN", "APURIMAC"],
+      "estacionalidad": "todo_año",
+      "tipo_hierro": "no_hemo"
+    },
+    {
+      "id": "cuy",
+      "nombre": "Cuy",
+      "categoria": "proteina_animal",
+      "hierro_mg_100g": 3.2,
+      "proteina_g_100g": 19.1,
+      "costo_s_kg": 25.00,
+      "porcion_std_g": 150,
+      "disponibilidad_regiones": ["CUSCO", "PUNO", "CAJAMARCA", "AYACUCHO", "JUNIN"],
+      "estacionalidad": "todo_año",
+      "tipo_hierro": "hemo"
+    },
+    {
+      "id": "pescado_bonito",
+      "nombre": "Bonito",
+      "categoria": "proteina_animal",
+      "hierro_mg_100g": 1.2,
+      "proteina_g_100g": 24.0,
+      "costo_s_kg": 12.00,
+      "porcion_std_g": 120,
+      "disponibilidad_regiones": ["LIMA", "PIURA", "LAMBAYEQUE", "LA LIBERTAD"],
+      "estacionalidad": "todo_año",
+      "tipo_hierro": "hemo"
+    },
+    {
+      "id": "huevo",
+      "nombre": "Huevo",
+      "categoria": "proteina_animal",
+      "hierro_mg_100g": 1.2,
+      "proteina_g_100g": 12.6,
+      "costo_s_kg": 7.50,
+      "porcion_std_g": 60,
+      "disponibilidad_regiones": "todas",
+      "estacionalidad": "todo_año",
+      "tipo_hierro": "hemo"
+    }
+  ]
+}

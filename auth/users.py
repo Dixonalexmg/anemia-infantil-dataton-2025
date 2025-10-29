@@ -1,104 +1,57 @@
-# auth/users.py
 """
-Gestión de usuarios y autenticación
+auth/users.py
+Sistema de autenticación - Compatible con tu código existente
 """
-from typing import Optional
-from dataclasses import dataclass
-from auth.security import hash_password, verify_password
 
+from auth.security import hash_password, verify_password
+from dataclasses import dataclass
 
 @dataclass
 class User:
-    """Clase de usuario del sistema"""
+    """Clase de usuario compatible con tu código"""
     username: str
     full_name: str
-    email: str
-    role: str  # 'admin', 'medico', 'nutricionista', 'consulta'
-    hashed_password: str
-    is_active: bool = True
-    
-    def to_dict(self):
-        """Convierte el usuario a diccionario (sin contraseña)"""
-        return {
-            "username": self.username,
-            "full_name": self.full_name,
-            "email": self.email,
-            "role": self.role,
-            "is_active": self.is_active
-        }
+    role: str
+    password_hash: str
 
-
-# Base de datos simulada de usuarios (en producción usar BD real)
+# Base de datos de usuarios
 USERS_DB = {
     "admin": User(
         username="admin",
         full_name="Administrador del Sistema",
-        email="admin@minsa.gob.pe",
-        role="admin",
-        hashed_password=hash_password("admin123"),  # CAMBIAR EN PRODUCCIÓN
-        is_active=True
+        role="Administrador",
+        password_hash=hash_password("admin123")
     ),
-    "medico_demo": User(
-        username="medico_demo",
+    "medico": User(
+        username="medico",
         full_name="Dr. Juan Pérez",
-        email="jperez@minsa.gob.pe",
-        role="medico",
-        hashed_password=hash_password("demo123"),
-        is_active=True
+        role="Médico",
+        password_hash=hash_password("demo123")
     ),
-    "nutricionista_demo": User(
-        username="nutricionista_demo",
+    "nutricionista": User(
+        username="nutricionista",
         full_name="Lic. María García",
-        email="mgarcia@minsa.gob.pe",
-        role="nutricionista",
-        hashed_password=hash_password("demo123"),
-        is_active=True
+        role="Nutricionista",
+        password_hash=hash_password("demo123")
     ),
-    "consulta": User(
-        username="consulta",
-        full_name="Usuario de Consulta",
-        email="consulta@minsa.gob.pe",
-        role="consulta",
-        hashed_password=hash_password("consulta123"),
-        is_active=True
+    "demo": User(
+        username="demo",
+        full_name="Usuario Demo",
+        role="demo",
+        password_hash=hash_password("demo")
     )
 }
 
-
-def authenticate_user(username: str, password: str) -> Optional[User]:
+def authenticate_user(username: str, password: str):
     """
-    Autentica un usuario.
-    
-    Args:
-        username: Nombre de usuario
-        password: Contraseña en texto plano
-        
+    Autentica usuario - Compatible con tu código existente
+
     Returns:
-        Usuario autenticado o None
+        User object si es válido, None si no
     """
     user = USERS_DB.get(username)
-    if not user:
-        return None
-    if not verify_password(password, user.hashed_password):
-        return None
-    if not user.is_active:
-        return None
-    return user
 
+    if user and verify_password(password, user.password_hash):
+        return user
 
-def get_user(username: str) -> Optional[User]:
-    """
-    Obtiene un usuario por username.
-    
-    Args:
-        username: Nombre de usuario
-        
-    Returns:
-        Usuario o None si no existe
-    """
-    return USERS_DB.get(username)
-
-
-def get_all_users() -> list:
-    """Obtiene todos los usuarios (sin contraseñas)"""
-    return [user.to_dict() for user in USERS_DB.values()]
+    return None

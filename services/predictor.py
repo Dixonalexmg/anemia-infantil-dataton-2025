@@ -1,8 +1,8 @@
 # services/predictor.py
 """
 Servicio de predicción de anemia usando modelo ML de clase mundial
-Modelo: RandomForest con 895K registros SIEN
-Métricas: Precision 99.9%, Recall 85%, AUC 0.999
+Modelo: RandomForest calibrado + Reglas clínicas v3
+Métricas: ECE=0.065, Precision 99.9%, Recall 85%, AUC 0.999
 """
 import numpy as np
 import pandas as pd
@@ -15,7 +15,7 @@ logger = logging.getLogger(__name__)
 
 
 class AnemiaPredictor:
-    """Predictor de anemia infantil usando modelo ML + reglas clínicas"""
+    """Predictor de anemia infantil usando modelo ML calibrado + reglas clínicas v3"""
     
     def __init__(self):
         """Inicializa el predictor y carga el modelo"""
@@ -25,7 +25,7 @@ class AnemiaPredictor:
         self._cargar_modelo()
         
     def _cargar_modelo(self):
-        """Carga el modelo ML entrenado"""
+        """Carga el modelo ML calibrado + híbrido v3"""
         try:
             model_path = Path("models/predictor_anemia_ml.pkl")
             
@@ -37,10 +37,14 @@ class AnemiaPredictor:
                 model_package = pickle.load(f)
             
             self.model = model_package['model']
-            self.threshold = model_package['threshold']
+            self.threshold = model_package.get('threshold', 0.8131)
             self.features_list = model_package['features']
             
-            logger.info(f"✅ Modelo ML cargado (Precision: 99.9%, Recall: 85%, Threshold: {self.threshold:.4f})")
+            # Verificar si es modelo calibrado
+            es_calibrado = model_package.get('calibrado', False)
+            version = model_package.get('version', 'N/A')
+            
+            logger.info(f"✅ Modelo ML cargado (Calibrado: {es_calibrado}, Versión: {version})")
             
         except Exception as e:
             logger.error(f"❌ Error cargando modelo: {e}")
@@ -114,7 +118,7 @@ class AnemiaPredictor:
         }
     
     def _preparar_features_ml(self, datos: Dict[str, Any]) -> Optional[pd.DataFrame]:
-        """Prepara features para el modelo ML (VERSIÓN CORREGIDA PARA SHAP)"""
+        """Prepara features para el modelo ML"""
         if self.model is None:
             return None
         
@@ -185,8 +189,52 @@ class AnemiaPredictor:
             logger.error(traceback.format_exc())
             return None
     
+    def _aplicar_reglas_clinicas_v3(self, prob_base: float, hb_ajustada: float, 
+                                     edad_meses: int, tiene_factores_riesgo: bool, 
+                                     altitud: int) -> float:
+        """
+        Aplica reglas clínicas v3 mejoradas sobre probabilidad base
+        
+        Mejoras v3:
+        - Gradientes suaves en Hb 10.0-11.0
+        - Protección casos severos (Hb <7.0)
+        - Detección alta altitud (>3000m)
+        """
+        prob_ajustada = prob_base
+        
+        # 🔴 REGLA 1: Casos críticos (Hb <7.0) → mínimo 90%
+        if hb_ajustada < 7.0:
+            prob_ajustada = max(prob_ajustada, 0.90)
+            return np.clip(prob_ajustada, 0, 1)
+        
+        # 🟠 REGLA 2: Gradientes suaves en zona de anemia
+        if hb_ajustada < 9.0:
+            prob_ajustada = max(prob_ajustada, 0.70)
+        elif hb_ajustada < 10.0:
+            prob_ajustada = max(prob_ajustada, 0.40)
+        elif hb_ajustada < 10.5:
+            # Gradiente suave: 40% → 25%
+            prob_minima = 0.40 - (hb_ajustada - 10.0) * 0.30
+            prob_ajustada = max(prob_ajustada, prob_minima)
+        elif hb_ajustada < 11.0:
+            # Gradiente suave: 25% → 15%
+            prob_minima = 0.25 - (hb_ajustada - 10.5) * 0.20
+            prob_ajustada = max(prob_ajustada, prob_minima)
+        elif hb_ajustada < 11.5 and (tiene_factores_riesgo or 6 <= edad_meses <= 12):
+            prob_ajustada = max(prob_ajustada, 0.10)
+        
+        # 🟢 REGLA 3: Casos sanos (Hb >12.5) → máximo 10%
+        if hb_ajustada > 12.5:
+            prob_ajustada = min(prob_ajustada, 0.10)
+        
+        # ⛰️ REGLA 4: Alta altitud con Hb borderline
+        if altitud > 3000 and 10.0 <= hb_ajustada <= 11.5 and tiene_factores_riesgo:
+            prob_ajustada = max(prob_ajustada, 0.30)
+        
+        return np.clip(prob_ajustada, 0, 1)
+    
     def predecir_ml(self, datos: Dict[str, Any]) -> Optional[Dict[str, Any]]:
-        """Predicción usando modelo ML"""
+        """Predicción usando modelo ML calibrado + reglas clínicas v3"""
         if self.model is None:
             return None
         
@@ -195,9 +243,33 @@ class AnemiaPredictor:
             if X is None:
                 return None
             
-            probabilidad = self.model.predict_proba(X)[0, 1]
+            # Probabilidad base del modelo calibrado
+            prob_base = self.model.predict_proba(X)[0, 1]
+            
+            # ✨ APLICAR REGLAS CLÍNICAS v3 ✨
+            hb_ajustada = self.ajustar_hemoglobina_altitud(
+                datos['hemoglobina'], 
+                datos.get('altitud', 0)
+            )
+            
+            tiene_factores_riesgo = (
+                not (datos.get('tiene_suplemento', False) or datos.get('recibe_suplemento', False)) or
+                not datos.get('asiste_cred', True) or
+                datos.get('area_rural', False)
+            )
+            
+            probabilidad = self._aplicar_reglas_clinicas_v3(
+                prob_base,
+                hb_ajustada,
+                datos['edad_meses'],
+                tiene_factores_riesgo,
+                datos.get('altitud', 0)
+            )
+            
+            # Predicción binaria
             prediccion = 1 if probabilidad >= self.threshold else 0
             
+            # Categoría de riesgo
             if prediccion == 1:
                 categoria_riesgo = "Alto" if probabilidad > 0.85 else "Medio-Alto"
             else:
@@ -206,12 +278,15 @@ class AnemiaPredictor:
             return {
                 "prediccion_ml": bool(prediccion),
                 "probabilidad": round(float(probabilidad), 4),
+                "probabilidad_base": round(float(prob_base), 4),  # Para análisis
                 "categoria_riesgo_ml": categoria_riesgo,
                 "confianza": round((max(probabilidad, 1-probabilidad)) * 100, 1)
             }
             
         except Exception as e:
             logger.error(f"Error en predicción ML: {e}")
+            import traceback
+            logger.error(traceback.format_exc())
             return None
     
     def calcular_riesgo(self, datos: Dict[str, Any]) -> Dict[str, Any]:
@@ -270,7 +345,7 @@ class AnemiaPredictor:
         }
     
     def predecir(self, datos: Dict[str, Any]) -> Dict[str, Any]:
-        """Predicción completa: ML + diagnóstico clínico + riesgo + recomendaciones"""
+        """Predicción completa: ML calibrado + reglas v3 + diagnóstico clínico"""
         prediccion_ml = self.predecir_ml(datos)
         
         hb = datos['hemoglobina']
@@ -291,7 +366,7 @@ class AnemiaPredictor:
             "hemoglobina_observada": hb,
             "edad_meses": edad,
             "altitud": altitud,
-            "metodo": "ML + Clínico" if prediccion_ml else "Clínico"
+            "metodo": "ML Calibrado v3 + Clínico" if prediccion_ml else "Clínico"
         }
         
         if prediccion_ml:

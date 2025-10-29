@@ -1,0 +1,134 @@
+[
+  {
+    "fecha": "2025-10-28T15:59:22.670851",
+    "hemoglobina": 11.5,
+    "hemoglobina_ajustada": 11.5,
+    "score_riesgo": 0.35,
+    "tiene_anemia": false,
+    "severidad": "Normal",
+    "edad_meses": 24,
+    "recibe_suplemento": false,
+    "asiste_cred": true
+  },
+  {
+    "fecha": "2025-10-28T15:59:47.031195",
+    "hemoglobina": 11.5,
+    "hemoglobina_ajustada": 11.5,
+    "score_riesgo": 0.35,
+    "tiene_anemia": false,
+    "severidad": "Normal",
+    "edad_meses": 24,
+    "recibe_suplemento": false,
+    "asiste_cred": true
+  },
+  {
+    "fecha": "2025-10-28T16:00:46.240764",
+    "hemoglobina": 11.5,
+    "hemoglobina_ajustada": 11.5,
+    "score_riesgo": 0.35,
+    "tiene_anemia": false,
+    "severidad": "Normal",
+    "edad_meses": 24,
+    "recibe_suplemento": false,
+    "asiste_cred": true
+  },
+  {
+    "fecha": "2025-10-28T16:00:46.699895",
+    "hemoglobina": 11.5,
+    "hemoglobina_ajustada": 11.5,
+    "score_riesgo": 0.35,
+    "tiene_anemia": false,
+    "severidad": "Normal",
+    "edad_meses": 24,
+    "recibe_suplemento": false,
+    "asiste_cred": true
+  },
+  {
+    "fecha": "2025-10-28T16:01:05.567344",
+    "hemoglobina": 11.5,
+    "hemoglobina_ajustada": 11.5,
+    "score_riesgo": 0.35,
+    "tiene_anemia": false,
+    "severidad": "Normal",
+    "edad_meses": 24,
+    "recibe_suplemento": false,
+    "asiste_cred": true
+  },
+  {
+    "fecha": "2025-10-28T16:01:06.081558",
+    "hemoglobina": 11.5,
+    "hemoglobina_ajustada": 11.5,
+    "score_riesgo": 0.35,
+    "tiene_anemia": false,
+    "severidad": "Normal",
+    "edad_meses": 24,
+    "recibe_suplemento": false,
+    "asiste_cred": true
+  },
+  {
+    "fecha": "2025-10-28T16:47:26.641147",
+    "hemoglobina": 11.5,
+    "hemoglobina_ajustada": 11.5,
+    "score_riesgo": 0.35,
+    "tiene_anemia": false,
+    "severidad": "Normal",
+    "edad_meses": 24,
+    "recibe_suplemento": false,
+    "asiste_cred": true
+  },
+  {
+    "fecha": "2025-10-28T16:47:49.819250",
+    "hemoglobina": 11.5,
+    "hemoglobina_ajustada": 11.5,
+    "score_riesgo": 0.35,
+    "tiene_anemia": false,
+    "severidad": "Normal",
+    "edad_meses": 24,
+    "recibe_suplemento": false,
+    "asiste_cred": true
+  },
+  {
+    "fecha": "2025-10-28T16:48:04.561959",
+    "hemoglobina": 11.5,
+    "hemoglobina_ajustada": 11.5,
+    "score_riesgo": 0.35,
+    "tiene_anemia": false,
+    "severidad": "Normal",
+    "edad_meses": 24,
+    "recibe_suplemento": false,
+    "asiste_cred": true
+  },
+  {
+    "fecha": "2025-10-28T16:48:05.068142",
+    "hemoglobina": 11.5,
+    "hemoglobina_ajustada": 11.5,
+    "score_riesgo": 0.35,
+    "tiene_anemia": false,
+    "severidad": "Normal",
+    "edad_meses": 24,
+    "recibe_suplemento": false,
+    "asiste_cred": true
+  },
+  {
+    "fecha": "2025-10-28T16:48:11.121997",
+    "hemoglobina": 11.5,
+    "hemoglobina_ajustada": 11.5,
+    "score_riesgo": 0.35,
+    "tiene_anemia": false,
+    "severidad": "Normal",
+    "edad_meses": 24,
+    "recibe_suplemento": false,
+    "asiste_cred": true
+  },
+  {
+    "fecha": "2025-10-28T16:48:11.629072",
+    "hemoglobina": 11.5,
+    "hemoglobina_ajustada": 11.5,
+    "score_riesgo": 0.35,
+    "tiene_anemia": false,
+    "severidad": "Normal",
+    "edad_meses": 24,
+    "recibe_suplemento": false,
+    "asiste_cred": true
+  }
+]
