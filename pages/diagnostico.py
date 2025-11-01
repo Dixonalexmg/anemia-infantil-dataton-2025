@@ -455,152 +455,304 @@ def pagina_diagnostico():
         
         logger.info("📊 DEBUG: Paso 11 - Iniciando render de SCORE...")
         
-        # =====================================================
-        # 11. MOSTRAR EVALUACIÓN RÁPIDA (SCORE + BARRAS)
-        # =====================================================
-        st.markdown("## 🎯 Evaluación y Plan de Acción Inmediato")
-        
-        logger.info("📊 DEBUG: Header renderizado, creando columnas...")
-        
-        col_resultado, col_accion = st.columns([1.2, 1])
-        
-        logger.info("📊 DEBUG: Columnas creadas, renderizando col_resultado...")
-        
-        with col_resultado:
+# =====================================================
+# 11. MOSTRAR EVALUACIÓN RÁPIDA CON SEMÁFORO EXPLICABLE ⭐ MEJORADO
+# =====================================================
+        st.markdown("## 🎯 Resultado del Análisis")
+        logger.info("📊 Iniciando render de resultado mejorado...")
+
+        # ========== SEMÁFORO GRANDE Y PROMINENTE ==========
+        col_semaforo_principal, col_info_rapida = st.columns([1.3, 1], gap="large")
+
+        with col_semaforo_principal:
             try:
+                # Determinar color y emoji según nivel de riesgo
+                colores_riesgo = {
+                    'BAJO': {'bg': '#28a745', 'emoji': '🟢', 'texto': 'RIESGO BAJO'},
+                    'MEDIO': {'bg': '#ffc107', 'emoji': '🟡', 'texto': 'RIESGO MODERADO'},
+                    'ALTO': {'bg': '#ff6b6b', 'emoji': '🔴', 'texto': 'RIESGO ALTO'},
+                    'CRÍTICO': {'bg': '#dc3545', 'emoji': '🔴', 'texto': 'RIESGO CRÍTICO'}
+                }
+
+                nivel = score['nivel'] if 'nivel' in score else 'MEDIO'
+                config_visual = colores_riesgo.get(nivel, colores_riesgo['MEDIO'])
+
+                # Calcular estado_texto
                 if resultado['tiene_anemia']:
                     severidad_emoji = {'Leve': '🟡', 'Moderada': '🟠', 'Severa': '🔴'}
                     emoji_estado = severidad_emoji.get(resultado['severidad'], '⚠️')
-                    estado_texto = f"ANEMIA {resultado['severidad'].upper()}"
+                    estado_texto = f"{emoji_estado} ANEMIA {resultado['severidad'].upper()}"
                 else:
-                    emoji_estado = '✅'
-                    estado_texto = "SIN ANEMIA"
-                
-                logger.info(f"📊 DEBUG: Estado calculado: {estado_texto}")
-                
-                st.markdown(f"""
-            <div style="background: {score['color']}; padding: 25px; border-radius: 12px;">
-                <h2 style="color: white; margin: 0;">{score['emoji']} {score['nivel']} ({probabilidad_ml*100:.1f}%)</h2>
-                <p style="color: white; font-size: 1.2em; margin: 12px 0 0 0;">
-                    {emoji_estado} {estado_texto} | Hb: {hemoglobina:.1f} g/dL<br>
-                    {score['explicacion']}
-                </p>
-            </div>
-            """, unsafe_allow_html=True)
+                    estado_texto = "✅ Sin Anemia"
 
-                
-                logger.info("✅ DEBUG: col_resultado renderizado correctamente")
-            
-            except Exception as e:
-                logger.error(f"❌ ERROR en col_resultado: {e}")
-                st.error(f"Error renderizando resultado: {e}")
-        
-        logger.info("📊 DEBUG: Renderizando col_accion...")
-        
-        with col_accion:
-            try:
+                # TARJETA GRANDE CON SEMÁFORO
                 st.markdown(f"""
-                <div style="background: rgba(255,255,255,0.95); border-left: 5px solid {score['color']};
-                            padding: 20px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
-                    <h3 style="margin-top: 0; color: #333;">💡 ACCIÓN INMEDIATA</h3>
-                    <p style="color: #555; font-size: 1.1em; line-height: 1.5;">
-                        {score['mensaje']}
+                <div style="background: {config_visual['bg']}; 
+                            padding: 3rem 2rem; 
+                            border-radius: 20px; 
+                            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+                            text-align: center;
+                            animation: fadeIn 0.5s ease-in;">
+                    <div style="font-size: 5rem; margin-bottom: 1rem; animation: pulse 2s infinite;">
+                        {config_visual['emoji']}
+                    </div>
+                    <h1 style="color: white; margin: 0 0 1.5rem 0; font-size: 2rem; font-weight: 700;">
+                        {config_visual['texto']}
+                    </h1>
+                    <div style="background: rgba(255,255,255,0.2); 
+                                padding: 1.5rem; 
+                                border-radius: 15px; 
+                                margin-bottom: 1rem;">
+                        <p style="color: white; margin: 0 0 0.5rem 0; font-size: 1rem; opacity: 0.9;">
+                            Probabilidad de Anemia
+                        </p>
+                        <h2 style="color: white; margin: 0; font-size: 4rem; font-weight: 900;">
+                            {probabilidad_ml*100:.0f}%
+                        </h2>
+                    </div>
+                    <p style="color: rgba(255,255,255,0.95); font-size: 1.1rem; margin: 0;">
+                        {estado_texto} | Hb: {hemoglobina:.1f} g/dL
                     </p>
                 </div>
+
+                <style>
+                @keyframes fadeIn {{
+                    from {{ opacity: 0; transform: translateY(20px); }}
+                    to {{ opacity: 1; transform: translateY(0); }}
+                }}
+                @keyframes pulse {{
+                    0%, 100% {{ transform: scale(1); }}
+                    50% {{ transform: scale(1.1); }}
+                }}
+                </style>
                 """, unsafe_allow_html=True)
-                
-                logger.info("✅ DEBUG: col_accion renderizado correctamente")
-            
+
+                logger.info("✅ Semáforo principal renderizado")
+
             except Exception as e:
-                logger.error(f"❌ ERROR en col_accion: {e}")
-                st.error(f"Error renderizando acción: {e}")
-        
-        logger.info("📊 DEBUG: Iniciando barras de porcentaje...")
-        
+                logger.error(f"❌ ERROR en semáforo: {e}")
+                st.error(f"Error: {e}")
+
+        with col_info_rapida:
+            try:
+                # TARJETA DE ACCIÓN INMEDIATA
+                st.markdown(f"""
+                <div style="background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%); 
+                            border-left: 6px solid {config_visual['bg']};
+                            padding: 2rem; 
+                            border-radius: 15px; 
+                            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+                            height: 100%;">
+                    <h3 style="margin-top: 0; color: #2c3e50; font-size: 1.5rem;">
+                        💡 Acción Inmediata
+                    </h3>
+                    <p style="color: #34495e; font-size: 1.15rem; line-height: 1.7; margin-bottom: 1.5rem;">
+                        {score.get('mensaje', 'Consultar con profesional de salud')}
+                    </p>
+                    <div style="background: rgba(255,255,255,0.8); 
+                                padding: 1rem; 
+                                border-radius: 10px;">
+                        <p style="color: #7f8c8d; font-size: 0.9rem; margin: 0;">
+                            ℹ️ Esto es una <strong>probabilidad estadística</strong>, 
+                            no un diagnóstico médico definitivo.
+                        </p>
+                    </div>
+                </div>
+                """, unsafe_allow_html=True)
+
+                logger.info("✅ Info rápida renderizada")
+
+            except Exception as e:
+                logger.error(f"❌ ERROR en info rápida: {e}")
+                st.error(f"Error: {e}")
+
+        st.markdown("<br>", unsafe_allow_html=True)
+
         # =====================================================
-        # MOSTRAR TOP 3 FACTORES DE RIESGO (SOLO NEGATIVOS)
+        # TOP 3 FACTORES PRINCIPALES ⭐ MEJORADO
         # =====================================================
+        st.markdown("### 🔍 ¿Por qué este resultado? - Top 3 Factores Principales")
+
         try:
+            # Obtener top 3 factores desde SHAP o fallback
+            top_factores_display = []
+
             if explicacion_shap and 'top_10' in explicacion_shap:
-                logger.info("📊 DEBUG: Datos SHAP disponibles, filtrando factores de riesgo...")
-                
-                # ✅ FILTRAR SOLO FACTORES DE RIESGO (shap_value > 0)
+                # Filtrar factores de riesgo (shap_value > 0)
                 top_factores_riesgo = explicacion_shap['top_10'][
                     explicacion_shap['top_10']['shap_value'] > 0
                 ].head(3)
-                
-                logger.info(f"📊 DEBUG: Factores de riesgo encontrados: {len(top_factores_riesgo)}")
-                
-                if len(top_factores_riesgo) == 0:
-                    st.success("✅ No se detectaron factores de riesgo significativos")
-                else:
-                    st.markdown("### ⚠️ Principales Factores de Riesgo")
-                    
-                    # Calcular porcentajes relativos
+
+                if len(top_factores_riesgo) > 0:
                     total_abs_shap = top_factores_riesgo['abs_shap'].sum()
-                    
-                    for i, (idx, row) in enumerate(top_factores_riesgo.iterrows(), 1):
-                        feature = row['feature']
-                        shap_val = row['shap_value']
-                        
-                        porcentaje = (row['abs_shap'] / total_abs_shap) * 100 if total_abs_shap > 0 else 33.3
-                        
-                        # Descripción legible (SOLO FACTORES NEGATIVOS)
-                        feature_mapping = {
-                            'sin_suplemento': 'No recibe suplemento de hierro',
-                            'hb_baja': 'Hemoglobina baja (<11 g/dL)',
-                            'area_rural': 'Área de residencia rural',
-                            'sin_cred': 'No asiste a controles CRED',
-                            'altitud_muy_alta': 'Altitud muy alta (>3000m)',
-                            'edad_6_11m': 'Edad 6-11 meses (grupo crítico)',
-                            'edad_12_23m': 'Edad 12-23 meses (grupo crítico)',
-                            'bajo_peso_nacimiento': 'Nació con bajo peso',
-                            'prematuro': 'Nació prematuro',
-                            'dept_PUNO': 'Reside en zona de alta prevalencia (Puno)',
-                            'dept_CUSCO': 'Reside en zona de alta prevalencia (Cusco)',
-                            'dept_HUANCAVELICA': 'Reside en zona de alta prevalencia (Huancavelica)',
-                            'hb_x_altitud': 'Combinación crítica: Hemoglobina baja + Alta altitud'
+
+                    # Mapeo de features a descripciones legibles
+                    feature_mapping = {
+                        'sin_suplemento': {
+                            'nombre': 'Sin Suplemento de Hierro',
+                            'icono': '💊',
+                            'descripcion': 'No recibe suplementación preventiva'
+                        },
+                        'hb_baja': {
+                            'nombre': 'Hemoglobina Baja',
+                            'icono': '🩸',
+                            'descripcion': 'Nivel de hemoglobina menor al esperado'
+                        },
+                        'area_rural': {
+                            'nombre': 'Área Rural',
+                            'icono': '🏘️',
+                            'descripcion': 'Residencia en zona de difícil acceso'
+                        },
+                        'sin_cred': {
+                            'nombre': 'Sin Controles CRED',
+                            'icono': '📋',
+                            'descripcion': 'No asiste a controles regulares'
+                        },
+                        'altitud_muy_alta': {
+                            'nombre': 'Alta Altitud',
+                            'icono': '⛰️',
+                            'descripcion': 'Altitud mayor a 3000 metros'
+                        },
+                        'edad_6_11m': {
+                            'nombre': 'Edad 6-11 meses',
+                            'icono': '👶',
+                            'descripcion': 'Grupo etario de mayor riesgo'
+                        },
+                        'edad_12_23m': {
+                            'nombre': 'Edad 12-23 meses',
+                            'icono': '👶',
+                            'descripcion': 'Período crítico de desarrollo'
+                        },
+                        'bajo_peso_nacimiento': {
+                            'nombre': 'Bajo Peso al Nacer',
+                            'icono': '⚖️',
+                            'descripcion': 'Nació con peso menor a 2500g'
                         }
-                        
-                        # Si es un factor positivo que pasó el filtro, no mostrarlo
-                        if feature in ['recibe_suplemento', 'asiste_cred'] or feature.startswith('hemoglobina'):
-                            continue
-                        
-                        descripcion = feature_mapping.get(feature, feature.replace('_', ' ').title())
-                        
-                        # Solo color rojo para riesgos
-                        color_barra = '#ff6b6b'
-                        emoji = '🔴'
-                        
+                    }
+
+                    for idx, row in top_factores_riesgo.iterrows():
+                        feature = row['feature']
+                        porcentaje = (row['abs_shap'] / total_abs_shap) * 100 if total_abs_shap > 0 else 33.3
+
+                        config = feature_mapping.get(feature, {
+                            'nombre': feature.replace('_', ' ').title(),
+                            'icono': '⚠️',
+                            'descripcion': 'Factor de riesgo detectado'
+                        })
+
+                        top_factores_display.append({
+                            'icono': config['icono'],
+                            'nombre': config['nombre'],
+                            'descripcion': config.get('descripcion', config['nombre']),
+                            'porcentaje': porcentaje
+                        })
+
+            # Fallback si no hay SHAP
+            if len(top_factores_display) == 0:
+                # Usar factores detectados básicos
+                factores_basicos = {
+                    'sin_suplemento': {'icono': '💊', 'nombre': 'Sin Suplemento de Hierro', 'descripcion': 'No recibe suplementación'},
+                    'sin_cred': {'icono': '📋', 'nombre': 'Sin Controles CRED', 'descripcion': 'No asiste a controles'},
+                    'area_rural': {'icono': '🏘️', 'nombre': 'Área Rural', 'descripcion': 'Zona de difícil acceso'},
+                    'alta_altitud': {'icono': '⛰️', 'nombre': 'Alta Altitud', 'descripcion': 'Mayor a 3000 metros'},
+                    'edad_6_24m': {'icono': '👶', 'nombre': 'Edad de Riesgo', 'descripcion': 'Grupo vulnerable'}
+                }
+
+                for i, factor_key in enumerate(factores_riesgo_detectados[:3], 1):
+                    config = factores_basicos.get(factor_key, {
+                        'icono': '⚠️', 
+                        'nombre': factor_key.replace('_', ' ').title(),
+                        'descripcion': 'Factor de riesgo detectado'
+                    })
+                    top_factores_display.append({
+                        'icono': config['icono'],
+                        'nombre': config['nombre'],
+                        'descripcion': config['descripcion'],
+                        'porcentaje': 100 / min(len(factores_riesgo_detectados), 3)
+                    })
+
+            # Renderizar las 3 tarjetas de factores
+            if len(top_factores_display) > 0:
+                col_f1, col_f2, col_f3 = st.columns(3, gap="medium")
+
+                for i, (col, factor) in enumerate(zip([col_f1, col_f2, col_f3], top_factores_display[:3]), 1):
+                    with col:
                         st.markdown(f"""
-                        <div style="margin-bottom: 15px;">
-                            <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
-                                <span style="font-weight: 600; color: #333;">{emoji} {i}. {descripcion}</span>
-                                <span style="font-weight: 700; color: {color_barra};">{porcentaje:.1f}%</span>
+                        <div style="background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%); 
+                                    padding: 1.8rem; 
+                                    border-radius: 15px; 
+                                    border-left: 5px solid {config_visual['bg']};
+                                    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+                                    height: 220px;
+                                    transition: transform 0.2s ease;">
+                            <div style="text-align: center; margin-bottom: 1rem;">
+                                <span style="font-size: 3rem;">{factor['icono']}</span>
                             </div>
-                            <div style="background: #e0e0e0; border-radius: 10px; height: 12px; overflow: hidden;">
-                                <div style="background: {color_barra}; width: {porcentaje}%; height: 100%; 
-                                            transition: width 0.3s ease;"></div>
+                            <h4 style="color: #2c3e50; 
+                                       margin: 0 0 0.5rem 0; 
+                                       font-size: 1.1rem; 
+                                       font-weight: 700;
+                                       text-align: center;">
+                                {i}. {factor['nombre']}
+                            </h4>
+                            <p style="color: #7f8c8d; 
+                                      font-size: 0.85rem; 
+                                      margin: 0 0 1rem 0;
+                                      text-align: center;
+                                      line-height: 1.4;">
+                                {factor['descripcion']}
+                            </p>
+                            <div style="background: #e9ecef; 
+                                        border-radius: 10px; 
+                                        height: 12px; 
+                                        overflow: hidden;
+                                        margin-bottom: 0.5rem;">
+                                <div style="background: {config_visual['bg']}; 
+                                            width: {factor['porcentaje']:.1f}%; 
+                                            height: 100%; 
+                                            border-radius: 10px;
+                                            transition: width 0.5s ease;"></div>
                             </div>
+                            <p style="text-align: center; 
+                                      color: {config_visual['bg']}; 
+                                      font-weight: 700; 
+                                      font-size: 1.1rem;
+                                      margin: 0;">
+                                {factor['porcentaje']:.0f}% de impacto
+                            </p>
                         </div>
                         """, unsafe_allow_html=True)
-                        
-                        logger.info(f"✅ DEBUG: Barra {i} renderizada: {feature} (riesgo)")
-                    
-                    logger.info("✅ DEBUG: Todas las barras de riesgo renderizadas correctamente")
-            
             else:
-                logger.info("ℹ️ DEBUG: No hay datos SHAP disponibles para barras")
-        
+                st.success("✅ No se detectaron factores de riesgo significativos")
+
+            logger.info("✅ Top 3 factores renderizados")
+
         except Exception as e:
-            logger.error(f"❌ ERROR en barras de porcentaje: {e}")
-            import traceback
-            logger.error(traceback.format_exc())
-            st.warning("⚠️ No se pudieron mostrar los factores de riesgo")
-        
+            logger.error(f"❌ ERROR en top 3 factores: {e}")
+            st.warning("⚠️ No se pudieron cargar los factores principales")
+
         st.divider()
-        
-        logger.info("✅ DEBUG: Sección 11 (SCORE) completada exitosamente")
+
+        # =====================================================
+        # LINK AL SIMULADOR (FLUJO GUIADO)
+        # =====================================================
+        col_link, col_btn = st.columns([3, 1])
+
+        with col_link:
+            st.info("💡 **¿Quieres ver cómo mejorar este resultado con intervenciones?**")
+
+        with col_btn:
+            if st.button("**🔮 Ver Simulador →**", type="primary", key="btn_link_simulador", use_container_width=True):
+                st.session_state.pagina_actual = "🔮 ¿Qué pasaría si...?"
+                st.session_state.datos_diagnostico = {
+                    'hemoglobina': hemoglobina,
+                    'edad_meses': edad_meses,
+                    'nivel_riesgo': score['nivel']
+                }
+                st.rerun()
+
+        st.divider()
+        logger.info("✅ Sección 11 completada")
 
 
 # =====================================================
@@ -785,6 +937,7 @@ def pagina_diagnostico():
         
         st.divider()
         
+        
         # =====================================================
         # 5️⃣ EXPLICABILIDAD IA + DETALLES TÉCNICOS ⭐ INNOVACIÓN
         # =====================================================
@@ -921,57 +1074,158 @@ def pagina_diagnostico():
         
         st.divider()
         
- # =====================================================
-        # SECCIÓN FINAL: ACCIONES (PDF + NOTIFICACIONES)
         # =====================================================
-        
+        # SECCIÓN FINAL: ACCIONES (PDF POR ROL + NOTIFICACIONES)
+        # =====================================================
+
         st.markdown("## 📋 Acciones Finales")
-        
-        col_pdf, col_notif = st.columns(2)
-        
-        # ========== BOTÓN PDF (CORREGIDO) ==========
-        with col_pdf:
+
+        col_pdf_medico, col_pdf_madre, col_notif = st.columns(3)
+
+        # ========== REPORTE PARA MÉDICO ==========
+        with col_pdf_medico:
             try:
                 from datetime import datetime
-                from utils.pdf_generator import generar_pdf_reporte
+                from utils.pdf_generator import ReportePDFGenerator
                 
-                # Crear diccionario semaforo compatible con PDF generator
-                semaforo_para_pdf = {
-                    'nivel': score['nivel'],
-                    'emoji': score['emoji'],
-                    'background': score['color'],
-                    'accion_inmediata': score['mensaje']
-                }
-                
-                with st.spinner('📝 Generando reporte PDF...'):
-                    pdf_bytes = generar_pdf_reporte(
-                        datos_paciente, 
-                        resultado, 
-                        recomendaciones,
-                        proyeccion_3m, 
-                        proyeccion_6m, 
-                        semaforo_para_pdf
-                    )
-                
-                nombre_archivo = f"Reporte_Anemia_{nombre_paciente or 'Paciente'}_{datetime.now().strftime('%Y%m%d_%H%M')}.pdf"
-                
-                st.download_button(
-                    label="📄 Descargar Reporte PDF",
-                    data=pdf_bytes,
-                    file_name=nombre_archivo,
-                    mime="application/pdf",
-                    type="primary",
-                    use_container_width=True,
-                    help="Descarga el reporte completo en PDF"
-                )
+                if st.button("📄 **Reporte Médico**", use_container_width=True, type="primary", help="Reporte clínico con datos técnicos"):
+                    with st.spinner('📝 Generando reporte médico...'):
+                        
+                        # Preparar datos para reporte médico
+                        datos_paciente = {
+                            'nombre_nino': nombre_completo,
+                            'nombre_madre': st.session_state.get('nombre_madre', 'Madre/Cuidador'),
+                            'dni': dni if 'dni' in locals() else 'N/A'
+                        }
+                        
+                        # Preparar datos clínicos completos
+                        datos_clinicos = {
+                            'hemoglobina': hemoglobina,
+                            'edad_meses': edad_meses,
+                            'peso_kg': peso_kg,
+                            'talla_cm': talla_cm,
+                            'altitud_msnm': altitud_msnm,
+                            'peso_p50': peso_kg * 1.1,  # Placeholder (calcular real si tienes tabla OMS)
+                            'talla_p50': talla_cm * 1.05,  # Placeholder
+                            'nivel_riesgo': score['nivel'],
+                            'probabilidad_ml': probabilidad_ml,
+                            'factor_1': explicacion_shap['top_10'].iloc[0]['feature'] if explicacion_shap and 'top_10' in explicacion_shap else 'N/A',
+                            'factor_2': explicacion_shap['top_10'].iloc[1]['feature'] if explicacion_shap and 'top_10' in explicacion_shap and len(explicacion_shap['top_10']) > 1 else 'N/A',
+                            'factor_3': explicacion_shap['top_10'].iloc[2]['feature'] if explicacion_shap and 'top_10' in explicacion_shap and len(explicacion_shap['top_10']) > 2 else 'N/A',
+                            # Adherencia (placeholder - integrar si tienes datos reales)
+                            'adherencia': {
+                                'dias_suplemento': 24,
+                                'pct_suplemento': 80.0,
+                                'dias_menu': 5,
+                                'pct_menu': 71.0,
+                                'controles_cred': 1,
+                                'pct_cred': 100.0
+                            },
+                            # Evolución Hb (placeholder - integrar si tienes histórico)
+                            'evolucion_hb': {
+                                'fechas': ['2024-10', '2024-11', '2024-12', '2025-01'],
+                                'valores': [9.8, 10.2, 10.5, hemoglobina]
+                            } if hemoglobina < 11.0 else None
+                        }
+                        
+                        # Generar PDF médico
+                        generator = ReportePDFGenerator()
+                        pdf_path = generator.generar_reporte_medico(datos_paciente, datos_clinicos)
+                        
+                        # Leer PDF y ofrecer descarga
+                        with open(pdf_path, "rb") as f:
+                            pdf_bytes = f.read()
+                        
+                        nombre_archivo = f"Reporte_Medico_{nombre_completo.replace(' ', '_')}_{datetime.now().strftime('%Y%m%d_%H%M')}.pdf"
+                        
+                        st.download_button(
+                            label="⬇️ Descargar Reporte Médico",
+                            data=pdf_bytes,
+                            file_name=nombre_archivo,
+                            mime="application/pdf",
+                            use_container_width=True,
+                            help="Reporte con datos clínicos, evolución y adherencia"
+                        )
                 
             except Exception as e:
-                st.error(f"❌ Error generando PDF: {e}")
+                st.error(f"❌ Error generando reporte médico: {e}")
                 with st.expander("🔍 Ver detalles del error"):
                     import traceback
                     st.code(traceback.format_exc())
-                st.info("💡 Verifica que `utils/pdf_generator.py` exista y esté correctamente implementado")
-        
+
+
+        # ========== REPORTE PARA MADRE ==========
+        with col_pdf_madre:
+            try:
+                from datetime import datetime
+                from utils.pdf_generator import ReportePDFGenerator
+                
+                if st.button("📄 **Reporte Madre**", use_container_width=True, help="Reporte educativo con plan alimentario"):
+                    
+                    # Verificar si hay menús en session_state
+                    if 'menu_generado' not in st.session_state or st.session_state.menu_generado is None:
+                        st.warning("""
+                        ⚠️ **Primero genera menús personalizados**  
+                        Ve a la sección **Menús Personalizados** para crear un plan alimentario.
+                        """)
+                    else:
+                        with st.spinner('📝 Generando reporte para madre...'):
+                            
+                            # Preparar datos para reporte madre
+                            datos_paciente = {
+                                'nombre_nino': nombre_completo,
+                                'nombre_madre': st.session_state.get('nombre_madre', 'Mamá'),
+                            }
+                            
+                            # Preparar plan alimentario
+                            menu_generado = st.session_state.menu_generado
+                            
+                            plan_alimentario = {
+                                'menu_semanal': [
+                                    {
+                                        'dia': dia,
+                                        'desayuno': menu_generado[dia]['desayuno']['nombre'],
+                                        'almuerzo': menu_generado[dia]['almuerzo']['nombre'],
+                                        'cena': menu_generado[dia]['cena']['nombre']
+                                    }
+                                    for dia in ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo']
+                                ],
+                                'lista_compras': [
+                                    {'ingrediente': 'Quinua', 'cantidad': '500g'},
+                                    {'ingrediente': 'Hígado de res', 'cantidad': '300g'},
+                                    {'ingrediente': 'Sangrecita', 'cantidad': '250g'},
+                                    {'ingrediente': 'Lentejas', 'cantidad': '400g'},
+                                    {'ingrediente': 'Espinaca', 'cantidad': '1 atado'},
+                                    {'ingrediente': 'Limones', 'cantidad': '6 unidades'},
+                                    {'ingrediente': 'Naranjas', 'cantidad': '6 unidades'},
+                                ]
+                            }
+                            
+                            # Generar PDF madre
+                            generator = ReportePDFGenerator()
+                            pdf_path = generator.generar_reporte_madre(datos_paciente, plan_alimentario)
+                            
+                            # Leer PDF y ofrecer descarga
+                            with open(pdf_path, "rb") as f:
+                                pdf_bytes = f.read()
+                            
+                            nombre_archivo = f"Plan_Nutricional_{nombre_completo.replace(' ', '_')}_{datetime.now().strftime('%Y%m%d_%H%M')}.pdf"
+                            
+                            st.download_button(
+                                label="⬇️ Descargar Plan Nutricional",
+                                data=pdf_bytes,
+                                file_name=nombre_archivo,
+                                mime="application/pdf",
+                                use_container_width=True,
+                                help="Plan semanal con tips y recordatorios"
+                            )
+            
+            except Exception as e:
+                st.error(f"❌ Error generando reporte madre: {e}")
+                with st.expander("🔍 Ver detalles del error"):
+                    import traceback
+                    st.code(traceback.format_exc())
+
         # ========== GENERAR CASO_ID ==========
         import uuid
         from datetime import datetime

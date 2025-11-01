@@ -1,0 +1,7 @@
+timestamp,telefono,variante,canal,tipo_control,dias,status
+2025-10-31T12:42:50.906777,940405893,B,WhatsApp,Control inmediato,7,simulado
+2025-10-31T12:42:50.908928,940405893,A,SMS,Seguimiento 1 mes,30,simulado
+2025-10-31T12:42:50.909695,940405893,C,SMS,Evaluación 3 meses,90,simulado
+2025-10-31T16:57:44.968582,940405893,A,SMS,Control inmediato,7,simulado
+2025-10-31T16:57:44.969969,940405893,B,WhatsApp,Seguimiento 1 mes,30,simulado
+2025-10-31T16:57:44.970974,940405893,A,SMS,Evaluación 3 meses,90,simulado
