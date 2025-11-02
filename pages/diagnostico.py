@@ -21,6 +21,19 @@ except ImportError:
     get_sistema_notificaciones = None
 
 def pagina_diagnostico():
+
+    if 'form_submitted' not in st.session_state:
+        st.session_state.form_submitted = False
+
+    if 'score' not in st.session_state:
+        st.session_state.score = {'nivel': 'No evaluado'}
+
+    if 'probabilidad_ml' not in st.session_state:
+        st.session_state.probabilidad_ml = 0.0
+
+    if 'pdf_cuidador' not in st.session_state:
+        st.session_state.pdf_cuidador = None
+
     """
     🚀 DIAGNÓSTICO INDIVIDUAL CON IA - VERSIÓN MEJORADA
     
@@ -52,6 +65,8 @@ def pagina_diagnostico():
         </div>
     </div>
     """, unsafe_allow_html=True)
+
+
     
     # === DICCIONARIO DE ALTITUDES POR DEPARTAMENTO ===
     ALTITUDES_DEPARTAMENTO = {
@@ -134,90 +149,319 @@ def pagina_diagnostico():
 
 
     st.markdown("---")
-    
+
+
     # =====================================================
-    # FORMULARIO DE ENTRADA
-    # =====================================================
+# FORMULARIO DE ENTRADA - VERSIÓN MEJORADA
+# Con validaciones en tiempo real, campo fuente HB, y microcopys guiados
+# =====================================================
+
     with st.form("form_diagnostico"):
         # Usar valores de session_state (campos ocultos)
         nombre_paciente = st.session_state.nombre_consulta
         dni_paciente = st.session_state.dni_consulta
-        
+
         st.markdown("---")
-        
+
         col_left, col_right = st.columns(2)
-        
+
+        # ========== COLUMNA IZQUIERDA: DATOS CLÍNICOS ==========
         with col_left:
-            st.markdown("#### Datos Clínicos")
-            edad_meses = st.number_input("Edad del niño (meses)", 6, 59, 24, 1, 
-                                        help="Edad en meses, rango: 6-59")
-            peso_kg = st.number_input("Peso del niño (kg)", 3.0, 25.0, 12.0, 0.1, 
-                                    help="Peso para dosificación")
-            hemoglobina = st.number_input("Hemoglobina (g/dL)", 5.0, 18.0, 11.5, 0.1, 
-                                        help="Nivel de hemoglobina")
-            altitud = st.number_input("Altitud (msnm)", 0, 5000, altitud_sugerida, 50, 
-                                    help=f"Ajustado a {altitud_sugerida}m para {departamento}")
-        
+            st.markdown("#### 🩸 Datos Clínicos")
+
+            edad_meses = st.number_input(
+                "Edad del niño (meses)", 
+                6, 59, 24, 1,
+                help="Edad en meses, rango: 6-59"
+            )
+
+            peso_kg = st.number_input(
+                "Peso del niño (kg)", 
+                3.0, 25.0, 12.0, 0.1,
+                help="Peso para dosificación"
+            )
+
+            talla_cm = st.number_input(
+                "Talla del niño (cm)", 
+                40.0, 120.0, 80.0, 0.5,
+                help="Talla en centímetros para calcular IMC"
+            )
+
+            # Validación de talla
+            if talla_cm < 50.0:
+                st.warning("⚠️ Talla muy baja para edad")
+            elif talla_cm > 110.0 and edad_meses < 36:
+                st.info("ℹ️ Talla en rango alto")
+
+            # Calcular IMC
+            imc = peso_kg / ((talla_cm / 100) ** 2)
+
+            if imc < 13.0:
+                st.warning("⚠️ IMC bajo: posible desnutrición")
+            elif imc > 17.0:
+                st.info("ℹ️ IMC en rango alto")
+            else:
+                st.info(f"✅ IMC normal: {imc:.1f}")
+
+
+            # ========== HEMOGLOBINA CON VALIDACIÓN ==========
+            hemoglobina = st.number_input(
+                "Hemoglobina (g/dL)", 
+                5.0, 18.0, 11.5, 0.1,
+                help="Nivel de hemoglobina (rango normal: 11-16 g/dL según edad)"
+            )
+
+            # Validaciones de hemoglobina en tiempo real
+            if hemoglobina < 7.0:
+                st.error("🚨 Valor CRÍTICO: Hemoglobina muy baja (<7 g/dL). Requiere consulta urgente.")
+            elif hemoglobina < 9.0:
+                st.warning("⚠️ Hemoglobina baja: se recomienda evaluación clínica inmediata.")
+            elif hemoglobina < 11.0:
+                st.info("ℹ️ Hemoglobina en rango bajo. Se sugiere seguimiento.")
+            elif hemoglobina > 15.0 and edad_meses < 12:
+                st.warning("⚠️ Valor más alto de lo esperado para esta edad. Verifica la medición.")
+
+            # ========== FUENTE DE HEMOGLOBINA (NUEVO) ==========
+            st.markdown("**Fuente de medición:**")
+            col_source_1, col_source_2 = st.columns(2)
+
+            with col_source_1:
+                fuente_hb = st.radio(
+                    "¿Cómo se midió la hemoglobina?",
+                    options=["🩸 Capilar (HemoCue/Rápida)", "🩸 Venosa (Laboratorio)"],
+                    label_visibility="collapsed",
+                    help="Capilar: rápida pero menos precisa. Venosa: estándar en laboratorio (más confiable)."
+                )
+
+            with col_source_2:
+                fecha_medicion = st.date_input(
+                    "Fecha de medición:",
+                    help="¿Cuándo se tomó esta muestra de sangre?",
+                    format="DD/MM/YYYY"
+                )
+
+            # ========== INFORMACIÓN SOBRE RANGO ESPERADO ==========
+            with st.expander("ℹ️ ¿Cuál es el rango normal de hemoglobina?"):
+                st.info("""
+                **Rangos normales según edad (OMS 2024 - Ajustados por altitud):**
+                - 6-23 meses: 11.0 a 14.0 g/dL
+                - 24-59 meses: 11.5 a 15.5 g/dL
+
+                Estos valores YA están ajustados para altitudes menores a 1000m.
+                Si estás en altitud > 3000m, los valores pueden ser 0.3-0.5 g/dL más altos.
+                """)
+
+            # ========== ALTITUD ==========
+            altitud = st.number_input(
+                "Altitud (msnm)", 
+                0, 5000, altitud_sugerida, 50,
+                help=f"Ajustado a {altitud_sugerida}m para {departamento}"
+            )
+
+        # ========== COLUMNA DERECHA: DATOS SOCIODEMOGRÁFICOS ==========
         with col_right:
-            st.markdown("#### Datos Sociodemográficos")
-            area = st.selectbox("Área de residencia", ["Urbana", "Rural"], 
-                            help="Área geográfica")
-            recibe_suplemento = st.selectbox("Recibe suplementación de hierro", 
-                                            ["Sí", "No"], index=1)
-            asiste_cred = st.selectbox("Asiste a controles CRED", 
-                                    ["Sí", "No"], index=0)
-            es_bajo_peso = st.checkbox("Nació con bajo peso (<2500g)", False)
-            es_prematuro = st.checkbox("Nació prematuro (<37 semanas)", False)
-            
+            st.markdown("#### 👨‍👩‍👧 Datos Sociodemográficos")
+
+            area = st.selectbox(
+                "Área de residencia", 
+                ["Urbana", "Rural"],
+                help="Área geográfica: Rural aumenta riesgo de anemia (~1.3x)"
+            )
+
+            recibe_suplemento = st.selectbox(
+                "¿Recibe suplementación de hierro?", 
+                ["No", "Sí"],
+                index=0,
+                help="¿El niño recibe gotas o tabletas de sulfato ferroso? (Importante para predicción)"
+            )
+
+            asiste_cred = st.selectbox(
+                "¿Asiste a controles CRED?", 
+                ["Sí", "No"],
+                index=0,
+                help="CRED (Crecimiento y Desarrollo): control de salud infantil. Regular = mejor resultado"
+            )
+
+            st.markdown("**Antecedentes de nacimiento:**")
+
+            col_antec1, col_antec2 = st.columns(2)
+
+            with col_antec1:
+                es_bajo_peso = st.checkbox(
+                    "Nació con bajo peso (<2500g)",
+                    False,
+                    help="Importante factor de riesgo"
+                )
+
+            with col_antec2:
+                es_prematuro = st.checkbox(
+                    "Nació prematuro (<37 semanas)",
+                    False,
+                    help="Prematuro = mayor riesgo de anemia"
+                )
+
+            # ========== RESUMEN DE VALIDACIÓN ==========
+            st.markdown("**✅ Estado de datos:**")
+
+            validacion_checks = []
+
+            # Validar hemoglobina
+            if 7.0 <= hemoglobina <= 17.0:
+                validacion_checks.append("✅ Hemoglobina")
+            else:
+                validacion_checks.append("❌ Hemoglobina fuera de rango")
+
+            # Validar edad
+            if 6 <= edad_meses <= 59:
+                validacion_checks.append("✅ Edad válida")
+            else:
+                validacion_checks.append("❌ Edad fuera de rango")
+
+            # Validar peso
+            if 3 <= peso_kg <= 25:
+                validacion_checks.append("✅ Peso válido")
+            else:
+                validacion_checks.append("❌ Peso fuera de rango")
+
+            # Mostrar checks
+            for check in validacion_checks:
+                st.text(check)
+
+            st.markdown("---")
+
             st.markdown("#### 📞 Datos de Contacto (Opcional)")
-            
+
             telefono_notif = st.text_input(
                 "📱 Teléfono/Celular",
                 placeholder="987654321",
-                help="Para recordatorios de controles CRED",
+                help="Para recordatorios de controles CRED. Solo números, 9 dígitos",
                 key="telefono_input"
             )
-            
+
+            # Validación de teléfono en tiempo real
             if telefono_notif:
                 if not telefono_notif.isdigit():
-                    st.error("❌ Ingresa solo números (9 dígitos)")
+                    st.error("❌ Ingresa solo números (0-9)")
                 elif len(telefono_notif) != 9:
-                    st.error(f"❌ Debe tener 9 dígitos (tiene {len(telefono_notif)})")
+                    st.error(f"❌ Debe tener 9 dígitos (has ingresado {len(telefono_notif)})")
                 else:
-                    st.success("✅ Teléfono válido")
-        
+                    st.success("✅ Teléfono válido: " + telefono_notif)
+
         st.markdown("---")
+
+        # ========== BOTONES DE ACCIÓN ==========
         col_btn1, col_btn2 = st.columns([3, 1])
+
         with col_btn1:
             submitted = st.form_submit_button(
                 "🔍 ANALIZAR CON INTELIGENCIA ARTIFICIAL", 
                 type="primary", 
-                use_container_width=True
+                use_container_width=True,
+                help="Evalúa el riesgo y genera recomendaciones personalizadas"
             )
+
         with col_btn2:
-            limpiar = st.form_submit_button("🗑️ Limpiar", type="secondary")
+            limpiar = st.form_submit_button(
+                "🗑️ Limpiar", 
+                type="secondary",
+                help="Limpia todos los campos"
+            )
+
+    # ========== MANEJO DE BOTONES ==========
     if limpiar:
         # Limpiar session_state
         st.session_state.dni_consulta = ""
         st.session_state.nombre_consulta = ""
+        st.success("✅ Formulario limpiado")
         st.rerun()
+
+    if submitted:
+        # ========== VALIDACIÓN FINAL ANTES DE PROCESAR ==========
+        errores = []
+
+        # Validar hemoglobina
+        if hemoglobina < 5.0 or hemoglobina > 18.0:
+            errores.append("Hemoglobina fuera del rango permitido (5-18 g/dL)")
+
+        # Validar edad
+        if edad_meses < 6 or edad_meses > 59:
+            errores.append("Edad debe estar entre 6 y 59 meses")
+
+        # Validar peso
+        if peso_kg < 3.0 or peso_kg > 25.0:
+            errores.append("Peso debe estar entre 3 y 25 kg")
+
+        # Validar teléfono si se ingresó
+        if telefono_notif:
+            if not telefono_notif.isdigit() or len(telefono_notif) != 9:
+                errores.append("Teléfono debe tener 9 dígitos")
+
+        if errores:
+            st.error("❌ Por favor corrige los siguientes errores:")
+            for error in errores:
+                st.write(f"  • {error}")
+        else:
+            # ========== PROCESAR PREDICCIÓN ==========
+            # Aquí iría tu lógica de predicción existente
+
+            # Guardar datos con fuente HB
+            datos_clinicos = {
+                'nombre': nombre_paciente,
+                'dni': dni_paciente,
+                'edad_meses': edad_meses,
+                'peso_kg': peso_kg,
+                'hemoglobina': hemoglobina,
+                'fuente_hemoglobina': fuente_hb,  # NUEVO
+                'fecha_medicion': fecha_medicion,  # NUEVO
+                'altitud': altitud,
+                'area': area,
+                'recibe_suplemento': recibe_suplemento == 'Sí',
+                'asiste_cred': asiste_cred == 'Sí',
+                'es_bajo_peso': es_bajo_peso,
+                'es_prematuro': es_prematuro,
+                'telefono': telefono_notif if telefono_notif else None
+            }
+
+            # Guardar en session_state
+            st.session_state.datos_diagnostico = datos_clinicos
+
+            st.success("✅ Datos guardados correctamente. Procesando...")
+
+
     # =====================================================
     # PROCESAR PREDICCIÓN
     # =====================================================
     if submitted:
+        st.session_state.form_submitted = True
+        score = {'nivel': 'No evaluado', 'probabilidad': 0.0}
+        probabilidad_ml = 0.0
+        explicacion_shap = None
+        proyeccion_3m = None
+        proyeccion_6m = None
+        recomendaciones = None
+        X_features_ml = None
+
+        # Configurar logger UNA SOLA VEZ (al inicio)
+        import logging
+        logger = logging.getLogger(__name__)
+
+
         # 1. PREPARAR DATOS DEL PACIENTE
         datos_paciente = {
-            'hemoglobina': hemoglobina,
-            'edad_meses': edad_meses,
-            'peso_kg': peso_kg,
-            'altitud': altitud,
-            'departamento': departamento,
-            'area_rural': area == "Rural",
-            'recibe_suplemento': recibe_suplemento == "Sí",
-            'asiste_cred': asiste_cred == "Sí",
-            'es_bajo_peso': es_bajo_peso,
-            'es_prematuro': es_prematuro
-        }
+        'hemoglobina': hemoglobina,
+        'edad_meses': edad_meses,
+        'peso_kg': peso_kg,
+        'talla_cm': talla_cm,  # AGREGAR si lo incluiste
+        'altitud': altitud,
+        'departamento': departamento,
+        'area_rural': area == "Rural",
+        'recibe_suplemento': recibe_suplemento == "Sí",
+        'asiste_cred': asiste_cred == "Sí",
+        'es_bajo_peso': es_bajo_peso,
+        'es_prematuro': es_prematuro,
+        'fuente_hemoglobina': fuente_hb,  # AGREGAR si lo incluiste
+        'fecha_medicion': fecha_medicion  # AGREGAR si lo incluiste
+    }
         
         # 2. REALIZAR PREDICCIÓN ML
         with st.spinner('🤖 Analizando con Inteligencia Artificial...'):
@@ -231,10 +475,6 @@ def pagina_diagnostico():
         # 1. Predicción completada
         st.success("✅ Análisis completado exitosamente")
         st.divider()
-        
-        # Configurar logger
-        import logging
-        logger = logging.getLogger(__name__)
         
         # 2. Generar features ML para explicabilidad
         try:
@@ -269,6 +509,7 @@ def pagina_diagnostico():
                     'CRÍTICO': 0.85
                 }.get(nivel_riesgo, 0.5)
             
+            st.session_state.probabilidad_ml = probabilidad_ml
             logger.info(f"✅ Probabilidad ML: {probabilidad_ml:.3f}")
         
         except Exception as e:
@@ -368,6 +609,8 @@ def pagina_diagnostico():
             ]
             
             score = calcular_score_simple(probabilidad_ml, top_factores)
+
+            st.session_state.score = score
             
             logger.info(f"✅ Score calculado: {score['nivel']}")
         
@@ -1074,290 +1317,494 @@ def pagina_diagnostico():
         
         st.divider()
         
-        # =====================================================
-        # SECCIÓN FINAL: ACCIONES (PDF POR ROL + NOTIFICACIONES)
-        # =====================================================
+    # =====================================================
+    # SECCIÓN FINAL: ACCIONES (PDF POR ROL + NOTIFICACIONES)
+    # =====================================================
+        if st.session_state.form_submitted:
+        
+            st.markdown("## 📋 Acciones Finales")
 
-        st.markdown("## 📋 Acciones Finales")
+            # ========== INFO SOBRE LOS REPORTES ==========
+            with st.expander("ℹ️ ¿Qué reporte necesito?", expanded=False):
+                col_info1, col_info2, col_info3 = st.columns(3)
 
-        col_pdf_medico, col_pdf_madre, col_notif = st.columns(3)
+                with col_info1:
+                    st.markdown("""
+                    **📄 Reporte Cuidador**
 
-        # ========== REPORTE PARA MÉDICO ==========
-        with col_pdf_medico:
-            try:
-                from datetime import datetime
-                from utils.pdf_generator import ReportePDFGenerator
-                
-                if st.button("📄 **Reporte Médico**", use_container_width=True, type="primary", help="Reporte clínico con datos técnicos"):
-                    with st.spinner('📝 Generando reporte médico...'):
-                        
-                        # Preparar datos para reporte médico
-                        datos_paciente = {
-                            'nombre_nino': nombre_completo,
-                            'nombre_madre': st.session_state.get('nombre_madre', 'Madre/Cuidador'),
-                            'dni': dni if 'dni' in locals() else 'N/A'
-                        }
-                        
-                        # Preparar datos clínicos completos
-                        datos_clinicos = {
-                            'hemoglobina': hemoglobina,
-                            'edad_meses': edad_meses,
-                            'peso_kg': peso_kg,
-                            'talla_cm': talla_cm,
-                            'altitud_msnm': altitud_msnm,
-                            'peso_p50': peso_kg * 1.1,  # Placeholder (calcular real si tienes tabla OMS)
-                            'talla_p50': talla_cm * 1.05,  # Placeholder
-                            'nivel_riesgo': score['nivel'],
-                            'probabilidad_ml': probabilidad_ml,
-                            'factor_1': explicacion_shap['top_10'].iloc[0]['feature'] if explicacion_shap and 'top_10' in explicacion_shap else 'N/A',
-                            'factor_2': explicacion_shap['top_10'].iloc[1]['feature'] if explicacion_shap and 'top_10' in explicacion_shap and len(explicacion_shap['top_10']) > 1 else 'N/A',
-                            'factor_3': explicacion_shap['top_10'].iloc[2]['feature'] if explicacion_shap and 'top_10' in explicacion_shap and len(explicacion_shap['top_10']) > 2 else 'N/A',
-                            # Adherencia (placeholder - integrar si tienes datos reales)
-                            'adherencia': {
-                                'dias_suplemento': 24,
-                                'pct_suplemento': 80.0,
-                                'dias_menu': 5,
-                                'pct_menu': 71.0,
-                                'controles_cred': 1,
-                                'pct_cred': 100.0
-                            },
-                            # Evolución Hb (placeholder - integrar si tienes histórico)
-                            'evolucion_hb': {
-                                'fechas': ['2024-10', '2024-11', '2024-12', '2025-01'],
-                                'valores': [9.8, 10.2, 10.5, hemoglobina]
-                            } if hemoglobina < 11.0 else None
-                        }
-                        
-                        # Generar PDF médico
-                        generator = ReportePDFGenerator()
-                        pdf_path = generator.generar_reporte_medico(datos_paciente, datos_clinicos)
-                        
-                        # Leer PDF y ofrecer descarga
-                        with open(pdf_path, "rb") as f:
-                            pdf_bytes = f.read()
-                        
-                        nombre_archivo = f"Reporte_Medico_{nombre_completo.replace(' ', '_')}_{datetime.now().strftime('%Y%m%d_%H%M')}.pdf"
-                        
-                        st.download_button(
-                            label="⬇️ Descargar Reporte Médico",
-                            data=pdf_bytes,
-                            file_name=nombre_archivo,
-                            mime="application/pdf",
-                            use_container_width=True,
-                            help="Reporte con datos clínicos, evolución y adherencia"
-                        )
-                
-            except Exception as e:
-                st.error(f"❌ Error generando reporte médico: {e}")
-                with st.expander("🔍 Ver detalles del error"):
-                    import traceback
-                    st.code(traceback.format_exc())
+                    ✅ Lenguaje simple
+                    ✅ Plan alimentario
+                    ✅ Tips prácticos
+                    ✅ Lista de compras
 
+                    Para: Madres y cuidadores
+                    """)
 
-        # ========== REPORTE PARA MADRE ==========
-        with col_pdf_madre:
-            try:
-                from datetime import datetime
-                from utils.pdf_generator import ReportePDFGenerator
-                
-                if st.button("📄 **Reporte Madre**", use_container_width=True, help="Reporte educativo con plan alimentario"):
-                    
-                    # Verificar si hay menús en session_state
-                    if 'menu_generado' not in st.session_state or st.session_state.menu_generado is None:
-                        st.warning("""
-                        ⚠️ **Primero genera menús personalizados**  
-                        Ve a la sección **Menús Personalizados** para crear un plan alimentario.
-                        """)
-                    else:
-                        with st.spinner('📝 Generando reporte para madre...'):
-                            
-                            # Preparar datos para reporte madre
-                            datos_paciente = {
-                                'nombre_nino': nombre_completo,
-                                'nombre_madre': st.session_state.get('nombre_madre', 'Mamá'),
-                            }
-                            
-                            # Preparar plan alimentario
-                            menu_generado = st.session_state.menu_generado
-                            
-                            plan_alimentario = {
-                                'menu_semanal': [
-                                    {
-                                        'dia': dia,
-                                        'desayuno': menu_generado[dia]['desayuno']['nombre'],
-                                        'almuerzo': menu_generado[dia]['almuerzo']['nombre'],
-                                        'cena': menu_generado[dia]['cena']['nombre']
+                with col_info2:
+                    st.markdown("""
+                    **📊 Reporte Profesional**
+
+                    ✅ Datos clínicos completos
+                    ✅ Gráficos de evolución
+                    ✅ Factores de riesgo (SHAP)
+                    ✅ Protocolo NTS 213
+
+                    Para: Médicos y nutricionistas
+                    """)
+
+                with col_info3:
+                    st.markdown("""
+                    **🏢 Reporte Entidad**
+
+                    ✅ Datos agregados
+                    ✅ Mapas por distrito
+                    ✅ Alertas de hotspots
+                    ✅ Tendencias
+
+                    Para: Instituciones públicas
+                    """)
+
+            st.divider()
+
+            # ========== BOTONES DE REPORTE POR ROL ==========
+            col_pdf1, col_pdf2, col_pdf3 = st.columns(3, gap="medium")
+
+            # ========== REPORTE PARA CUIDADOR (MADRE) ==========
+            with col_pdf1:
+                try:
+                    from datetime import datetime
+                    from utils.pdf_generator import ReportePDFGenerator
+
+                    if st.button(
+                        "📄 PDF Cuidador", 
+                        use_container_width=True, 
+                        type="primary", 
+                        help="Plan alimentario con tips prácticos para la madre/cuidador",
+                        key="btn_pdf_cuidador"
+                    ):
+
+                        # Verificar si hay menús en session_state
+                        if 'menu_generado' not in st.session_state or st.session_state.menu_generado is None:
+                            st.warning("""
+                            ⚠️ **Primero genera menús personalizados**  
+                            Ve a la sección **Menús Personalizados** para crear un plan alimentario.
+                            """)
+                        else:
+                            with st.spinner('📝 Generando reporte para cuidador...'):
+                                try:
+                                    # Preparar datos para reporte cuidador
+                                    datos_paciente = {
+                                        'nombre_nino': nombre_paciente,
+                                        'nombre_madre': st.session_state.get('nombre_madre', 'Mamá'),
+                                        'edad_meses': edad_meses,
                                     }
-                                    for dia in ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo']
-                                ],
-                                'lista_compras': [
-                                    {'ingrediente': 'Quinua', 'cantidad': '500g'},
-                                    {'ingrediente': 'Hígado de res', 'cantidad': '300g'},
-                                    {'ingrediente': 'Sangrecita', 'cantidad': '250g'},
-                                    {'ingrediente': 'Lentejas', 'cantidad': '400g'},
-                                    {'ingrediente': 'Espinaca', 'cantidad': '1 atado'},
-                                    {'ingrediente': 'Limones', 'cantidad': '6 unidades'},
-                                    {'ingrediente': 'Naranjas', 'cantidad': '6 unidades'},
-                                ]
-                            }
-                            
-                            # Generar PDF madre
-                            generator = ReportePDFGenerator()
-                            pdf_path = generator.generar_reporte_madre(datos_paciente, plan_alimentario)
-                            
-                            # Leer PDF y ofrecer descarga
-                            with open(pdf_path, "rb") as f:
-                                pdf_bytes = f.read()
-                            
-                            nombre_archivo = f"Plan_Nutricional_{nombre_completo.replace(' ', '_')}_{datetime.now().strftime('%Y%m%d_%H%M')}.pdf"
-                            
-                            st.download_button(
-                                label="⬇️ Descargar Plan Nutricional",
-                                data=pdf_bytes,
-                                file_name=nombre_archivo,
-                                mime="application/pdf",
-                                use_container_width=True,
-                                help="Plan semanal con tips y recordatorios"
-                            )
-            
-            except Exception as e:
-                st.error(f"❌ Error generando reporte madre: {e}")
-                with st.expander("🔍 Ver detalles del error"):
-                    import traceback
-                    st.code(traceback.format_exc())
 
-        # ========== GENERAR CASO_ID ==========
-        import uuid
-        from datetime import datetime
-        import time
-        
-        if 'caso_id_actual' not in st.session_state:
-            st.session_state.caso_id_actual = f"{datetime.now().strftime('%Y%m%d_%H%M%S')}_{uuid.uuid4().hex[:6]}"
-        
-        caso_id = st.session_state.caso_id_actual
-        
-        # ========== FEEDBACK CON ANIMACIÓN ==========
-        st.markdown("---")
-        st.markdown("### 📋 ¿Fue útil este diagnóstico?")
-        
-        feedback_key = f'feedback_{caso_id}'
-        
-        col1, col2, col3 = st.columns(3)
-        
-        with col1:
-            if st.button("✅ Muy claro", key="fb1", use_container_width=True):
-                with st.spinner("💾 Guardando feedback..."):
+                                    # Preparar plan alimentario
+                                    menu_generado = st.session_state.menu_generado
+
+                                    plan_alimentario = {
+                                        'menu_semanal': [
+                                            {
+                                                'dia': dia,
+                                                'desayuno': menu_generado.get(dia, {}).get('desayuno', {}).get('nombre', 'N/A'),
+                                                'almuerzo': menu_generado.get(dia, {}).get('almuerzo', {}).get('nombre', 'N/A'),
+                                                'cena': menu_generado.get(dia, {}).get('cena', {}).get('nombre', 'N/A')
+                                            }
+                                            for dia in ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo']
+                                        ],
+                                        'lista_compras': [
+                                            {'ingrediente': 'Hígado de res', 'cantidad': '300g', 'beneficio': 'Máximo hierro'},
+                                            {'ingrediente': 'Sangrecita', 'cantidad': '250g', 'beneficio': 'Hierro fácil de absorber'},
+                                            {'ingrediente': 'Lentejas', 'cantidad': '400g', 'beneficio': 'Proteína y hierro'},
+                                            {'ingrediente': 'Espinaca', 'cantidad': '1 atado', 'beneficio': 'Hierro y vitaminas'},
+                                            {'ingrediente': 'Naranja', 'cantidad': '6 unidades', 'beneficio': 'Vitamina C para absorber hierro'},
+                                            {'ingrediente': 'Limón', 'cantidad': '6 unidades', 'beneficio': 'Ácido cítrico para absorber hierro'},
+                                            {'ingrediente': 'Huevos', 'cantidad': '12 unidades', 'beneficio': 'Proteína completa'},
+                                        ],
+                                        'recomendaciones': [
+                                            '🩸 Combina las carnes rojas con zumo de naranja o limón para mejor absorción',
+                                            '⚡ Ofrece menús a horas fijas (06:00, 12:00, 19:00)',
+                                            '👨‍⚕️ Asiste a CRED mensualmente para seguimiento',
+                                            '📞 Llama si el niño rechaza comida por 2 días seguidos',
+                                        ],
+                                        'proxima_cita': 'Próxima cita CRED: próxima semana',
+                                        'telefono_contacto': '01-4154122 (MINSA)'
+                                    }
+
+                                    # Generar PDF cuidador (simplificado vs médico)
+                                    generator = ReportePDFGenerator()
+                                    pdf_path = generator.generar_reporte_madre(datos_paciente, plan_alimentario)
+
+                                    # Leer PDF y ofrecer descarga
+                                    with open(pdf_path, "rb") as f:
+                                        pdf_bytes = f.read()
+                                        st.session_state.pdf_cuidador = {
+                                            'bytes': pdf_bytes,
+                                            'nombre': nombre_archivo
+                                        }
+
+
+                                    nombre_archivo = f"Plan_Nutricional_{nombre_paciente.replace(' ', '_')}_{datetime.now().strftime('%Y%m%d_%H%M')}.pdf"
+
+                                    st.download_button(
+                                        label="⬇️ Descargar PDF Cuidador",
+                                        data=pdf_bytes,
+                                        file_name=nombre_archivo,
+                                        mime="application/pdf",
+                                        use_container_width=True,
+                                        help="Plan semanal con tips prácticos"
+                                    )
+
+                                    st.success("✅ Reporte descargado. ¡Comparte con tu familia!")
+
+                                except Exception as e:
+                                    st.error(f"❌ Error generando reporte: {e}")
+                                    with st.expander("🔍 Ver detalles"):
+                                        import traceback
+                                        st.code(traceback.format_exc())
+
+                except Exception as e:
+                    st.error(f"❌ Error: {e}")
+
+
+            # ========== REPORTE PARA PROFESIONAL (MÉDICO) ==========
+            with col_pdf2:
+                try:
+                    from datetime import datetime
+                    from utils.pdf_generator import ReportePDFGenerator
+
+                    if st.button(
+                        "📊 PDF Profesional", 
+                        use_container_width=True, 
+                        help="Datos clínicos completos para profesional de salud",
+                        key="btn_pdf_profesional"
+                    ):
+                        with st.spinner('📝 Generando reporte profesional...'):
+                            try:
+                                # Preparar datos para reporte médico
+                                datos_paciente = {
+                                    'nombre_nino': nombre_paciente,
+                                    'nombre_madre': st.session_state.get('nombre_madre', 'Madre/Cuidador'),
+                                    'edad_meses': edad_meses,
+                                    'dni': dni_paciente if 'dni' in locals() else 'N/A'
+                                }
+                                
+                                # Preparar datos clínicos completos
+                                datos_clinicos = {
+                                    'hemoglobina': hemoglobina,
+                                    'fuente_hemoglobina': st.session_state.datos_diagnostico.get('fuente_hemoglobina', 'No especificada') if 'datos_diagnostico' in st.session_state else 'N/A',
+                                    'fecha_medicion': st.session_state.datos_diagnostico.get('fecha_medicion', 'N/A') if 'datos_diagnostico' in st.session_state else 'N/A',
+                                    'edad_meses': edad_meses,
+                                    'peso_kg': peso_kg,
+                                    'talla_cm': talla_cm,
+                                    'imc': round(peso_kg / ((talla_cm/100)**2), 2),
+                                    'altitud_msnm': altitud_sugerida,
+                                    'nivel_riesgo': score['nivel'],
+                                    'probabilidad_ml': probabilidad_ml,
+                                    'recibe_suplemento': st.session_state.datos_diagnostico.get('recibe_suplemento', False) if 'datos_diagnostico' in st.session_state else False,
+                                    'asiste_cred': st.session_state.datos_diagnostico.get('asiste_cred', False) if 'datos_diagnostico' in st.session_state else False,
+                                    'bajo_peso_nacimiento': st.session_state.datos_diagnostico.get('es_bajo_peso', False) if 'datos_diagnostico' in st.session_state else False,
+                                    'prematuro': st.session_state.datos_diagnostico.get('es_prematuro', False) if 'datos_diagnostico' in st.session_state else False,
+                                    # Top factores SHAP
+                                    'factor_1': explicacion_shap['top_10'].iloc[0]['feature'] if explicacion_shap and 'top_10' in explicacion_shap else 'N/A',
+                                    'factor_2': explicacion_shap['top_10'].iloc[1]['feature'] if explicacion_shap and 'top_10' in explicacion_shap and len(explicacion_shap['top_10']) > 1 else 'N/A',
+                                    'factor_3': explicacion_shap['top_10'].iloc[2]['feature'] if explicacion_shap and 'top_10' in explicacion_shap and len(explicacion_shap['top_10']) > 2 else 'N/A',
+                                    # Recomendaciones clínicas
+                                    'protocolo_nts': 'NTS 213 - Anemia infantil',
+                                    'recomendacion': score.get('mensaje', 'Seguimiento clínico recomendado')
+                                }
+
+                                # Generar PDF profesional
+                                generator = ReportePDFGenerator()
+                                pdf_path = generator.generar_reporte_medico(datos_paciente, datos_clinicos)
+
+                                # Leer PDF y ofrecer descarga
+                                with open(pdf_path, "rb") as f:
+                                    pdf_bytes = f.read()
+                                    st.session_state.pdf_cuidador = {
+                                                'bytes': pdf_bytes,
+                                                'nombre': nombre_archivo
+                                            }
+
+
+                                nombre_archivo = f"Reporte_Clinico_{nombre_paciente.replace(' ', '_')}_{datetime.now().strftime('%Y%m%d_%H%M')}.pdf"
+
+                                if st.session_state.pdf_cuidador:
+                                    st.download_button(
+                                        label="⬇️ Descargar PDF Cuidador",
+                                        data=st.session_state.pdf_cuidador['bytes'],
+                                        file_name=st.session_state.pdf_cuidador['nombre'],
+                                        mime="application/pdf"
+                                    )
+
+                                st.success("✅ Reporte descargado. Perfecto para historia clínica.")
+
+                            except Exception as e:
+                                st.error(f"❌ Error generando reporte: {e}")
+                                with st.expander("🔍 Ver detalles"):
+                                    import traceback
+                                    st.code(traceback.format_exc())
+
+                except Exception as e:
+                    st.error(f"❌ Error: {e}")
+
+
+            # ========== REPORTE PARA ENTIDAD (AGREGADO) ==========
+            with col_pdf3:
+                try:
+                    if st.button(
+                        "🏢 PDF Entidad", 
+                        use_container_width=True, 
+                        help="Análisis agregado para instituciones de salud",
+                        key="btn_pdf_entidad"
+                    ):
+                        with st.spinner('📝 Generando reporte de entidad...'):
+                            try:
+                                # Preparar datos agregados
+                                datos_agregados = {
+                                    'fecha_reporte': datetime.now().strftime('%Y-%m-%d'),
+                                    'paciente_actual': nombre_paciente,
+                                    'probabilidad': probabilidad_ml,
+                                    'nivel_riesgo': score['nivel'],
+                                    # Datos poblacionales (simulados - integrar reales)
+                                    'total_evaluados': 150,
+                                    'casos_riesgo_bajo': 30,
+                                    'casos_riesgo_medio': 60,
+                                    'casos_riesgo_alto': 45,
+                                    'casos_riesgo_critico': 15,
+                                    'prevalencia_regional': 35.2,  # Porcentaje
+                                    'altitud_promedio': altitud_sugerida,
+                                }
+
+                                generator = ReportePDFGenerator()
+                                pdf_path = generator.generar_reporte_entidad(datos_agregados)
+
+                                # Leer PDF y ofrecer descarga
+                                with open(pdf_path, "rb") as f:
+                                    pdf_bytes = f.read()
+                                    st.session_state.pdf_cuidador = {
+                                                'bytes': pdf_bytes,
+                                                'nombre': nombre_archivo
+                                            }
+
+
+                                nombre_archivo = f"Analisis_Entidad_{datetime.now().strftime('%Y%m%d_%H%M')}.pdf"
+
+                                if st.session_state.pdf_cuidador:
+                                    st.download_button(
+                                        label="⬇️ Descargar PDF Cuidador",
+                                        data=st.session_state.pdf_cuidador['bytes'],
+                                        file_name=st.session_state.pdf_cuidador['nombre'],
+                                        mime="application/pdf"
+                                    )
+
+                                st.success("✅ Reporte descargado. Incluye análisis agregado.")
+
+                            except Exception as e:
+                                st.error(f"❌ Error generando reporte: {e}")
+                                with st.expander("🔍 Ver detalles"):
+                                    import traceback
+                                    st.code(traceback.format_exc())
+
+                except Exception as e:
+                    st.error(f"❌ Error: {e}")
+
+            st.divider()
+
+       # ========== GENERAR CASO_ID ==========
+    import uuid
+    from datetime import datetime
+    import time
+
+    if 'caso_id_actual' not in st.session_state:
+        st.session_state.caso_id_actual = f"{datetime.now().strftime('%Y%m%d_%H%M%S')}_{uuid.uuid4().hex[:6]}"
+
+    caso_id = st.session_state.caso_id_actual
+
+    # ========== FEEDBACK CON ANIMACIÓN ==========
+    st.markdown("---")
+    st.markdown("### 📋 ¿Fue útil este diagnóstico?")
+
+    feedback_key = f'feedback_{caso_id}'
+
+    col1, col2, col3 = st.columns(3)
+
+    with col1:
+        if st.button("✅ Muy claro", key="fb1", use_container_width=True):
+            with st.spinner("💾 Guardando feedback..."):
+                try:
                     from utils.feedback import guardar_feedback
                     guardar_feedback(caso_id, 100, True)
-                    time.sleep(0.5)  # Dar tiempo a ver el spinner
                     st.session_state[feedback_key] = 'claro'
-                st.balloons()  # Animación de celebración
-        
-        with col2:
-            if st.button("⚠️ Algunas dudas", key="fb2", use_container_width=True):
-                with st.spinner("💾 Guardando feedback..."):
+                    time.sleep(0.3)
+                except Exception as e:
+                    st.warning(f"⚠️ No se pudo guardar feedback: {e}")
+            st.balloons()
+
+    with col2:
+        if st.button("⚠️ Algunas dudas", key="fb2", use_container_width=True):
+            with st.spinner("💾 Guardando feedback..."):
+                try:
                     from utils.feedback import guardar_feedback
                     guardar_feedback(caso_id, 50, True)
-                    time.sleep(0.5)
                     st.session_state[feedback_key] = 'dudas'
-        
-        with col3:
-            if st.button("❌ No entendí", key="fb3", use_container_width=True):
-                with st.spinner("💾 Guardando feedback..."):
+                    time.sleep(0.3)
+                except Exception as e:
+                    st.warning(f"⚠️ No se pudo guardar feedback: {e}")
+
+    with col3:
+        if st.button("❌ No entendí", key="fb3", use_container_width=True):
+            with st.spinner("💾 Guardando feedback..."):
+                try:
                     from utils.feedback import guardar_feedback
                     guardar_feedback(caso_id, 0, False)
-                    time.sleep(0.5)
                     st.session_state[feedback_key] = 'no'
-        
-        # Mostrar mensaje si ya hay feedback
-        if feedback_key in st.session_state:
-            if st.session_state[feedback_key] == 'claro':
-                st.success("✅ ¡Gracias! Tu feedback fue guardado exitosamente 🙏")
-            elif st.session_state[feedback_key] == 'dudas':
-                st.warning("⚠️ Feedback guardado. Un profesional puede ayudarte.")
-            elif st.session_state[feedback_key] == 'no':
-                st.error("❌ Feedback guardado. Te contactaremos pronto.")
-        
-        # ========== NOTIFICACIONES CON ANIMACIÓN ==========
-        st.markdown("---")
-        st.markdown("### 📧 Recordatorios Automáticos")
-        
-        tiene_tel = telefono_notif and len(telefono_notif) == 9 and telefono_notif.isdigit()
-        
-        if not tiene_tel:
-            st.caption("⚠️ Ingresa un teléfono válido (9 dígitos) en el formulario")
-        else:
-            notif_key = f'notif_{caso_id}'
-            
-            if st.button("📧 Programar 3 Recordatorios", key="btn_notif", type="primary", use_container_width=True):
-                try:
-                    # Barra de progreso animada
-                    progress_bar = st.progress(0)
-                    status_text = st.empty()
-                    
-                    status_text.text("📧 Inicializando sistema de recordatorios...")
-                    progress_bar.progress(25)
                     time.sleep(0.3)
-                    
+                except Exception as e:
+                    st.warning(f"⚠️ No se pudo guardar feedback: {e}")
+
+    # Mostrar mensaje si ya hay feedback
+    if feedback_key in st.session_state:
+        if st.session_state[feedback_key] == 'claro':
+            st.success("✅ ¡Gracias! Tu feedback fue guardado exitosamente 🙏")
+        elif st.session_state[feedback_key] == 'dudas':
+            st.warning("⚠️ Feedback guardado. Un profesional puede ayudarte.")
+        elif st.session_state[feedback_key] == 'no':
+            st.error("❌ Feedback guardado. Te contactaremos pronto.")
+
+    # ========== NOTIFICACIONES CON ANIMACIÓN ==========
+    st.markdown("---")
+    st.markdown("### 📧 Recordatorios Automáticos")
+
+    tiene_tel = False
+    if 'datos_diagnostico' in st.session_state and st.session_state.datos_diagnostico:
+        telefono = st.session_state.datos_diagnostico.get('telefono')
+        tiene_tel = telefono and len(telefono) == 9 and telefono.isdigit()
+    else:
+        # Fallback a variable local si no está en session_state
+        tiene_tel = telefono_notif and len(telefono_notif) == 9 and telefono_notif.isdigit()
+
+    if not tiene_tel:
+        st.caption("⚠️ Ingresa un teléfono válido (9 dígitos) en el formulario para programar recordatorios")
+    else:
+        notif_key = f'notif_{caso_id}'
+
+        if st.button("📧 Programar 3 Recordatorios", key="btn_notif", type="primary", use_container_width=True):
+            try:
+                # Obtener teléfono
+                if 'datos_diagnostico' in st.session_state:
+                    telefono_actual = st.session_state.datos_diagnostico.get('telefono')
+                else:
+                    telefono_actual = telefono_notif
+
+                # Barra de progreso animada
+                progress_bar = st.progress(0)
+                status_text = st.empty()
+
+                status_text.text("📧 Inicializando sistema de recordatorios...")
+                progress_bar.progress(25)
+                time.sleep(0.3)
+
+                # Intentar importar sistema de nudges
+                try:
                     from utils.nudges import SistemaNudges
                     sistema = SistemaNudges()
-                    
+
                     status_text.text("📅 Programando controles CRED...")
                     progress_bar.progress(50)
                     time.sleep(0.3)
-                    
+
+                    # Obtener nombre
+                    nombre_actual = nombre_paciente if 'nombre_paciente' in locals() else st.session_state.get('nombre_consulta', 'Paciente')
+
                     resultados = sistema.programar_recordatorios_multiples(
-                        telefono_notif,
-                        nombre_paciente or "Paciente",
+                        telefono_actual,
+                        nombre_actual,
                         [
                             {'tipo': 'Control inmediato', 'dias': 7},
                             {'tipo': 'Seguimiento 1 mes', 'dias': 30},
                             {'tipo': 'Evaluación 3 meses', 'dias': 90}
                         ]
                     )
-                    
-                    status_text.text("✅ Guardando en sistema...")
-                    progress_bar.progress(75)
-                    time.sleep(0.3)
-                    
-                    st.session_state[notif_key] = {
-                        'telefono': telefono_notif,
-                        'resultados': resultados,
-                        'fecha': datetime.now().strftime('%d/%m/%Y %H:%M')
-                    }
-                    
-                    progress_bar.progress(100)
-                    status_text.text("✅ ¡Completado!")
-                    time.sleep(0.5)
-                    
-                    # Limpiar elementos temporales
-                    progress_bar.empty()
-                    status_text.empty()
-                    
-                    st.balloons()  # Animación
-                    
-                except Exception as e:
-                    st.error(f"❌ Error: {e}")
-            
-            # Mostrar confirmación si ya envió
-            if notif_key in st.session_state:
-                st.success(f"✅ **Recordatorios enviados exitosamente**")
-                st.info(f"📱 Teléfono: {st.session_state[notif_key]['telefono']}")
-                st.caption(f"🕐 {st.session_state[notif_key]['fecha']}")
-                
-                with st.expander("📋 Ver detalles"):
-                    for r in st.session_state[notif_key]['resultados']:
-                        st.caption(f"• {r['tipo_control']} (+{r['dias_hasta_control']} días) - {r['canal']}")
-        
-        # ========== NUEVA CONSULTA (LIMPIA TODO) ==========
-        st.markdown("---")
-        
+
+                except ImportError:
+                    # Si no existe utils.nudges, crear estructura simple
+                    st.info("ℹ️ Sistema de nudges no disponible. Guardando en modo simulado.")
+                    resultados = [
+                        {'tipo_control': 'Control inmediato', 'dias_hasta_control': 7, 'canal': 'SMS'},
+                        {'tipo_control': 'Seguimiento 1 mes', 'dias_hasta_control': 30, 'canal': 'SMS'},
+                        {'tipo_control': 'Evaluación 3 meses', 'dias_hasta_control': 90, 'canal': 'SMS'}
+                    ]
+
+                status_text.text("✅ Guardando en sistema...")
+                progress_bar.progress(75)
+                time.sleep(0.3)
+
+                st.session_state[notif_key] = {
+                    'telefono': telefono_actual,
+                    'resultados': resultados,
+                    'fecha': datetime.now().strftime('%d/%m/%Y %H:%M')
+                }
+
+                progress_bar.progress(100)
+                status_text.text("✅ ¡Completado!")
+                time.sleep(0.3)
+
+                # Limpiar elementos temporales
+                progress_bar.empty()
+                status_text.empty()
+
+                st.balloons()
+                st.success("✅ **Recordatorios programados exitosamente**")
+
+            except Exception as e:
+                st.error(f"❌ Error al programar recordatorios: {e}")
+                import traceback
+                with st.expander("🔍 Ver detalles del error"):
+                    st.code(traceback.format_exc())
+
+        # Mostrar confirmación si ya envió
+        if notif_key in st.session_state:
+            st.success(f"✅ **Recordatorios programados**")
+            st.info(f"📱 Teléfono: {st.session_state[notif_key]['telefono']}")
+            st.caption(f"🕐 {st.session_state[notif_key]['fecha']}")
+
+            with st.expander("📋 Ver detalles de recordatorios"):
+                for r in st.session_state[notif_key]['resultados']:
+                    tipo = r.get('tipo_control', r.get('tipo', 'N/A'))
+                    dias = r.get('dias_hasta_control', r.get('dias', 0))
+                    canal = r.get('canal', 'SMS')
+                    st.caption(f"• {tipo} (+{dias} días) - {canal}")
+
+    # ========== NUEVA CONSULTA (LIMPIA TODO) ==========
+    st.markdown("---")
+
+    col_nueva_consulta = st.columns(1)
+
+    with col_nueva_consulta[0]:
         if st.button("🔄 Nueva Consulta", type="primary", use_container_width=True, key="btn_nueva_consulta"):
-            # Limpiar TODO
-            keys_to_delete = list(st.session_state.keys())
-            for key in keys_to_delete:
-                del st.session_state[key]
-            
-            st.success("✅ Datos limpiados. Recargando formulario...")
-            time.sleep(1)
+            st.session_state.form_submitted = False
+            st.session_state.score = None
+            st.session_state.probabilidad_ml = 0.0
             st.rerun()
+            try:
+                # Limpiar SOLO las claves relacionadas con esta consulta
+                keys_to_delete = [k for k in st.session_state.keys() if k in [
+                    'datos_diagnostico',
+                    'resultado_prediccion',
+                    'menu_generado',
+                    'feedback_' + caso_id,
+                    'notif_' + caso_id,
+                    'caso_id_actual'
+                ]]
+
+                for key in keys_to_delete:
+                    del st.session_state[key]
+
+                st.success("✅ Formulario limpiado. Recargando...")
+                time.sleep(0.5)
+                st.rerun()
+
+            except Exception as e:
+                st.error(f"❌ Error al limpiar: {e}")
+                st.info("Recarga la página manualmente si es necesario")
