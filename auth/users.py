@@ -1,57 +1,126 @@
 """
 auth/users.py
-Sistema de autenticación - Compatible con tu código existente
+Módulo de autenticación - Base de datos de usuarios para testing
 """
 
-from auth.security import hash_password, verify_password
 from dataclasses import dataclass
+from typing import Optional
+import logging
+
+logger = logging.getLogger(__name__)
+
+# ════════════════════════════════════════════════════════════════════════════════
+# MODELO DE USUARIO AUTENTICADO
+# ════════════════════════════════════════════════════════════════════════════════
 
 @dataclass
-class User:
-    """Clase de usuario compatible con tu código"""
+class AuthUser:
+    """Modelo de usuario autenticado"""
     username: str
+    password: str
     full_name: str
-    role: str
-    password_hash: str
+    role: str  # 'cuidador', 'profesional', 'entidad', 'demo'
+    email: str
 
-# Base de datos de usuarios
-USERS_DB = {
-    "admin": User(
-        username="admin",
-        full_name="Administrador del Sistema",
-        role="Administrador",
-        password_hash=hash_password("admin123")
+    def __repr__(self):
+        return f"<AuthUser {self.username} ({self.role})>"
+
+# ════════════════════════════════════════════════════════════════════════════════
+# BASE DE DATOS DE USUARIOS (para testing/demo)
+# ════════════════════════════════════════════════════════════════════════════════
+
+USUARIOS_DEMO = [
+    AuthUser(
+        username="cuidador1",
+        password="pass123",
+        full_name="María Pérez (Cuidadora)",
+        role="cuidador",
+        email="maria@example.com"
     ),
-    "medico": User(
-        username="medico",
-        full_name="Dr. Juan Pérez",
-        role="Médico",
-        password_hash=hash_password("demo123")
+    AuthUser(
+        username="medico1",
+        password="pass123",
+        full_name="Dr. Juan García (Médico)",
+        role="profesional",
+        email="juan@example.com"
     ),
-    "nutricionista": User(
-        username="nutricionista",
-        full_name="Lic. María García",
-        role="Nutricionista",
-        password_hash=hash_password("demo123")
+    AuthUser(
+        username="entidad1",
+        password="pass123",
+        full_name="MINSA - Entidad Nacional",
+        role="entidad",
+        email="minsa@example.com"
     ),
-    "demo": User(
+    AuthUser(
         username="demo",
-        full_name="Usuario Demo",
+        password="demo",
+        full_name="Usuario Demostración",
         role="demo",
-        password_hash=hash_password("demo")
-    )
-}
+        email="demo@example.com"
+    ),
+    # Usuarios adicionales para testing
+    AuthUser(
+        username="admin",
+        password="admin123",
+        full_name="Administrador Sistema",
+        role="admin",
+        email="admin@example.com"
+    ),
+]
 
-def authenticate_user(username: str, password: str):
+# ════════════════════════════════════════════════════════════════════════════════
+# FUNCIONES DE AUTENTICACIÓN
+# ════════════════════════════════════════════════════════════════════════════════
+
+def authenticate_user(username: str, password: str) -> Optional[AuthUser]:
     """
-    Autentica usuario - Compatible con tu código existente
+    Autentica un usuario verificando credenciales
+
+    Args:
+        username: Nombre de usuario
+        password: Contraseña
 
     Returns:
-        User object si es válido, None si no
+        AuthUser si credenciales son válidas, None si no
     """
-    user = USERS_DB.get(username)
+    try:
+        # Buscar usuario en base de datos
+        for user in USUARIOS_DEMO:
+            if user.username == username and user.password == password:
+                logger.info(f"✅ Usuario autenticado: {username} ({user.role})")
+                return user
 
-    if user and verify_password(password, user.password_hash):
-        return user
+        # Usuario no encontrado o contraseña incorrecta
+        logger.warning(f"❌ Intento fallido de login: {username}")
+        return None
 
+    except Exception as e:
+        logger.error(f"❌ Error en autenticación: {e}")
+        return None
+
+def get_user_by_username(username: str) -> Optional[AuthUser]:
+    """
+    Obtiene usuario por nombre de usuario
+
+    Args:
+        username: Nombre de usuario
+
+    Returns:
+        AuthUser si existe, None si no
+    """
+    for user in USUARIOS_DEMO:
+        if user.username == username:
+            return user
     return None
+
+def user_exists(username: str) -> bool:
+    """Verifica si un usuario existe"""
+    return get_user_by_username(username) is not None
+
+def obtener_todos_usuarios():
+    """Devuelve lista de todos los usuarios para display"""
+    return USUARIOS_DEMO
+
+def obtener_usuarios_por_rol(role: str):
+    """Obtiene usuarios de un rol específico"""
+    return [u for u in USUARIOS_DEMO if u.role == role]

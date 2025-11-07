@@ -1,0 +1,24 @@
+[
+  {
+    "fecha": "2025-11-06T21:18:00.707270",
+    "hemoglobina": 10.8,
+    "hemoglobina_ajustada": 9.8,
+    "score_riesgo": 0.7677,
+    "tiene_anemia": true,
+    "severidad": "Moderada",
+    "edad_meses": 24,
+    "recibe_suplemento": false,
+    "asiste_cred": true
+  },
+  {
+    "fecha": "2025-11-06T21:18:20.245578",
+    "hemoglobina": 10.8,
+    "hemoglobina_ajustada": 9.8,
+    "score_riesgo": 0.7677,
+    "tiene_anemia": true,
+    "severidad": "Moderada",
+    "edad_meses": 24,
+    "recibe_suplemento": false,
+    "asiste_cred": true
+  }
+]

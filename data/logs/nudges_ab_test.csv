@@ -8,3 +8,15 @@ timestamp,telefono,variante,canal,tipo_control,dias,status
 2025-11-01T18:17:33.262280,940405893,C,SMS,Control inmediato,7,simulado
 2025-11-01T18:17:33.263290,940405893,B,WhatsApp,Seguimiento 1 mes,30,simulado
 2025-11-01T18:17:33.264318,940405893,B,WhatsApp,Evaluación 3 meses,90,simulado
+2025-11-03T16:03:31.148057,940405893,B,WhatsApp,Control inmediato,7,simulado
+2025-11-03T16:03:31.150860,940405893,C,SMS,Seguimiento 1 mes,30,simulado
+2025-11-03T16:03:31.152826,940405893,A,SMS,Evaluación 3 meses,90,simulado
+2025-11-03T21:03:22.617516,940405893,A,SMS,Control inmediato,7,simulado
+2025-11-03T21:03:22.620030,940405893,B,WhatsApp,Seguimiento 1 mes,30,simulado
+2025-11-03T21:03:22.621511,940405893,B,WhatsApp,Evaluación 3 meses,90,simulado
+2025-11-05T20:17:11.513586,940405893,C,SMS,Control inmediato,7,simulado
+2025-11-05T20:17:11.517123,940405893,A,SMS,Seguimiento 1 mes,30,simulado
+2025-11-05T20:17:11.518884,940405893,B,WhatsApp,Evaluación 3 meses,90,simulado
+2025-11-05T20:17:32.762406,940405893,A,SMS,Control inmediato,7,simulado
+2025-11-05T20:17:32.766159,940405893,A,SMS,Seguimiento 1 mes,30,simulado
+2025-11-05T20:17:32.768871,940405893,A,SMS,Evaluación 3 meses,90,simulado

@@ -26,9 +26,23 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-
 def pagina_menus():
     """Página principal de menús personalizados"""
+
+    # ============================================
+    # MAPEO DE FRASES DE BENEFICIO (MOVIDO AL INICIO)
+    # ============================================
+    frases_beneficio = {
+        'higado': '🩸 Máxima cantidad de hierro (18mg/100g). Absorción óptima con zumo de naranja',
+        'sangrecita': '🩸 Hierro de fácil absorción. Combina con limón para maximizar',
+        'bazo': '🩸 Muy rico en hierro heme. La mejor opción después del hígado',
+        'menestra': '⚡ Hierro no-heme. Cómelo con naranja o tomate para mejor absorción',
+        'frijoles': '⚡ Proteína + hierro vegetal. Acompaña con vitamina C',
+        'espinaca': '⚡ Hierro verde. Fresquita para máxima absorción',
+        'acelga': '⚡ Calcio + hierro. Cocida con ajo es más digerible',
+        'huevo': '🥚 Proteína completa. Acompaña con ensalada verde',
+        'leche': '🥛 Calcio para huesos fuertes. Mejor con cucharitas de miel',
+    }
 
     # ============================================
     # HEADER CON GRADIENTE
@@ -56,9 +70,9 @@ def pagina_menus():
     # CONFIGURACIÓN Y VALIDACIONES
     # ============================================
     st.markdown("### ⚙️ Configuración del Menú")
-    
+
     col1, col2, col3, col4 = st.columns(4)
-    
+
     with col1:
         edad_meses = st.number_input(
             "Edad del niño (meses)",
@@ -68,7 +82,7 @@ def pagina_menus():
             step=1,
             help="Rango: 6-59 meses"
         )
-    
+
     with col2:
         departamento = st.selectbox(
             "Departamento",
@@ -76,7 +90,7 @@ def pagina_menus():
              "HUANCAVELICA", "CAJAMARCA", "PIURA", "LA LIBERTAD"],
             help="Priorizamos ingredientes disponibles en tu región"
         )
-    
+
     with col3:
         presupuesto_diario = st.number_input(
             "Presupuesto diario (S/)",
@@ -86,7 +100,7 @@ def pagina_menus():
             step=1.0,
             help="Presupuesto disponible para alimentación del niño"
         )
-    
+
     with col4:
         # ✅ VALIDACIÓN DE FECHA/HORA HB (NUEVO - 100%)
         fecha_ultima_hb = st.date_input(
@@ -96,27 +110,27 @@ def pagina_menus():
             max_value=datetime.now().date(),
             help="¿Cuándo se midió la hemoglobina?"
         )
-    
+
     # ✅ ALERTAS DE VALIDACIÓN DE FECHA (NUEVO - 100%)
     if fecha_ultima_hb:
         dias_desde_medicion = (datetime.now().date() - fecha_ultima_hb).days
-        
+
         if dias_desde_medicion > 90:
             st.error(f"""
             ❌ **Medición muy antigua ({dias_desde_medicion} días)**  
             Recomendaciones pueden no ser precisas. Actualiza datos antes de continuar.
             """)
             return  # Bloquear generación de menú
-        
+
         elif dias_desde_medicion > 30:
             st.warning(f"""
             ⚠️ **Hace {dias_desde_medicion} días de la última medición**  
             Considera actualizar datos para mayor precisión.
             """)
-        
+
         elif dias_desde_medicion <= 7:
             st.success(f"✅ Medición reciente ({dias_desde_medicion} días) - Datos actualizados")
-    
+
     # WHATSAPP (OPCIONAL)
     telefono_whatsapp = st.text_input(
         "📱 WhatsApp (opcional, 9 dígitos)",
@@ -124,19 +138,19 @@ def pagina_menus():
         help="Para enviar el menú directamente a tu teléfono",
         placeholder="987654321"
     )
-    
+
     # Validación de WhatsApp
     whatsapp_valido = telefono_whatsapp and len(telefono_whatsapp) == 9 and telefono_whatsapp.isdigit()
-    
+
     if telefono_whatsapp and not whatsapp_valido:
         st.caption("⚠️ Formato inválido (debe ser 9 dígitos)")
-    
+
     # CASO ID ÚNICO
     if 'caso_id_menus' not in st.session_state:
         st.session_state.caso_id_menus = f"{datetime.now().strftime('%Y%m%d_%H%M%S')}_{uuid.uuid4().hex[:6]}"
-    
+
     caso_id = st.session_state.caso_id_menus
-    
+
     st.markdown("---")
 
     # ============================================
@@ -144,7 +158,7 @@ def pagina_menus():
     # ============================================
     recomendador = MenuRecommender()
     motor_sustitucion = MenuSubstitutionEngine()
-    
+
     contexto_paciente = {
         'departamento': departamento,
         'edad_meses': edad_meses,
@@ -274,10 +288,11 @@ def pagina_menus():
     ]
 
     # ============================================
-    # GENERAR TOP 3 MENÚS
+    # GENERAR TOP 3 MENÚS (CORREGIDO)
     # ============================================
     with st.spinner("🤖 Analizando y optimizando los mejores menús para tu perfil..."):
         try:
+            # CORRECCIÓN: recomendar_top3 ahora recibe 2 parámetros (menus, contexto)
             top3_menus = recomendador.recomendar_top3(menus_base, contexto_paciente)
         except Exception as e:
             logger.error(f"Error generando menús: {e}")
@@ -298,22 +313,22 @@ def pagina_menus():
     # 💰 COSTO TOTAL Y MÉTRICAS (100% VISIBLE)
     # ============================================
     st.success(f"✅ **{len(top3_menus)} menús óptimos** generados para {departamento}")
-    
+
     # Calcular métricas agregadas
     costo_top3 = sum(menu['desglose']['costo_s'] for menu in top3_menus)
     costo_promedio = costo_top3 / 3
     hierro_promedio = sum(menu['desglose']['hierro_mg'] for menu in top3_menus) / 3
     score_promedio = sum(menu['score'] for menu in top3_menus) / 3
-    
+
     col_m1, col_m2, col_m3, col_m4 = st.columns(4)
-    
+
     with col_m1:
         st.metric(
             "💰 Costo Promedio",
             f"S/ {costo_promedio:.2f}",
             help="Costo promedio de los 3 mejores menús"
         )
-    
+
     with col_m2:
         diferencia = costo_promedio - presupuesto_diario
         st.metric(
@@ -323,7 +338,7 @@ def pagina_menus():
             delta_color="inverse" if diferencia > 0 else "normal",
             help="Diferencia con tu presupuesto objetivo"
         )
-    
+
     with col_m3:
         st.metric(
             "🩸 Hierro Promedio",
@@ -331,7 +346,7 @@ def pagina_menus():
             delta=f"{(hierro_promedio/10*100):.0f}% de meta diaria",
             help="Meta: 10 mg/día para niños 6-59 meses (OMS 2024)"
         )
-    
+
     with col_m4:
         st.metric(
             "⭐ Score Global",
@@ -339,7 +354,7 @@ def pagina_menus():
             delta="Óptimo" if score_promedio >= 80 else "Bueno",
             help="Score combinado de hierro + costo + disponibilidad"
         )
-    
+
     st.markdown("---")
 
     # ============================================
@@ -350,7 +365,7 @@ def pagina_menus():
         f"🥈 {top3_menus[1]['nombre'][:30]}...",
         f"🥉 {top3_menus[2]['nombre'][:30]}..."
     ])
-    
+
     for idx, (tab, menu) in enumerate(zip(tabs, top3_menus), 1):
         with tab:
             mostrar_detalle_menu(
@@ -369,7 +384,7 @@ def pagina_menus():
     st.markdown("---")
     st.markdown("### 🗓️ Menú Semanal Completo")
     st.caption("Rotación automática de los Top 3 para variedad nutricional")
-    
+
     dias = ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo"]
     semanal = [
         {
@@ -380,7 +395,7 @@ def pagina_menus():
         }
         for i, d in enumerate(dias)
     ]
-    
+
     # Calcular costo semanal
     costo_semanal = sum(
         m['desayuno']['desglose']['costo_s'] +
@@ -388,31 +403,30 @@ def pagina_menus():
         m['cena']['desglose']['costo_s']
         for m in semanal
     )
-    
+
     hierro_semanal = sum(
         m['desayuno']['desglose']['hierro_mg'] +
         m['almuerzo']['desglose']['hierro_mg'] +
-        m['cena']['desglose']['hierro_mg']
-        for m in semanal
+        m['cena']['desglose']['costo_s'] for m in semanal
     )
-    
+
     # Métricas semanales
     col_sem1, col_sem2, col_sem3 = st.columns(3)
-    
+
     with col_sem1:
         st.metric(
             "💰 Costo Total Semanal",
             f"S/ {costo_semanal:.2f}",
             delta=f"S/ {costo_semanal/7:.2f}/día promedio"
         )
-    
+
     with col_sem2:
         st.metric(
             "🩸 Hierro Total Semanal",
             f"{hierro_semanal:.1f} mg",
             delta=f"{hierro_semanal/70*100:.0f}% de meta semanal"
         )
-    
+
     with col_sem3:
         ahorro = (presupuesto_diario * 7) - costo_semanal
         st.metric(
@@ -421,7 +435,7 @@ def pagina_menus():
             delta=f"S/ {abs(ahorro):.2f}",
             delta_color="normal" if ahorro >= 0 else "inverse"
         )
-    
+
     # Tabla semanal con costos
     tabla = pd.DataFrame([
         {
@@ -434,12 +448,12 @@ def pagina_menus():
         }
         for m in semanal
     ])
-    
+
     st.dataframe(tabla, use_container_width=True, hide_index=True)
-    
+
     # Acciones semanal
     col_accion1, col_accion2 = st.columns(2)
-    
+
     with col_accion1:
         if st.button("📥 **Guardar Menú Semanal (PDF)**", use_container_width=True, type="primary", key="btn_pdf_semanal"):
             with st.spinner("Generando PDF..."):
@@ -455,7 +469,7 @@ def pagina_menus():
                         )
                 except Exception as e:
                     st.error(f"Error generando PDF: {e}")
-    
+
     with col_accion2:
         if whatsapp_valido:
             if st.button("📱 **Enviar Semanal a mi WhatsApp**", use_container_width=True, key="btn_whats_semanal"):
@@ -476,52 +490,52 @@ def pagina_menus():
     # ============================================
     st.markdown("---")
     st.markdown("## 💡 Tips Científicos para Maximizar Absorción de Hierro")
-    
+
     c1, c2, c3 = st.columns(3)
-    
+
     c1.markdown("""
     ### 🍋 Potenciar con Vitamina C
-    
+
     **Combinar siempre con:**
     - Jugo de naranja natural (150ml)
     - Limón exprimido (1 unidad)
     - Papaya, kiwi, fresa
     - Pimiento rojo, brócoli
-    
+
     **Resultado:** Aumenta absorción **3-4 veces**
-    
+
     *Fuente: OMS 2024*
     """)
-    
+
     c2.markdown("""
     ### ⏰ Horarios Óptimos
-    
+
     **Mejores momentos:**
     - Desayuno: 8:00-9:00 AM
     - Almuerzo: 12:00-1:00 PM
     - Cena: 6:00-7:00 PM
-    
+
     **Evitar:**
     - Comer muy tarde (>9 PM)
     - Saltarse comidas
-    
+
     *Digestión óptima = Mejor absorción*
     """)
-    
+
     c3.markdown("""
     ### ❌ Inhibidores de Hierro
-    
+
     **NO consumir junto a comidas:**
     - Té negro o verde
     - Café
     - Leche/yogurt/queso
     - Chocolate
-    
+
     **Esperar:** Mínimo 2 horas después
-    
+
     **Bloquean absorción:** Hasta 50-70%
     """)
-    
+
     # Alerta final
     st.info("""
     📌 **Recordatorio importante:**  
@@ -535,36 +549,36 @@ def pagina_menus():
 # ============================================
 def mostrar_detalle_menu(menu, idx, recomendador, motor_sustitucion, departamento, presupuesto_diario, telefono_whatsapp):
     """Muestra el detalle completo de un menú con todas las features"""
-    
+
     # HEADER CON MEDALLA
     col_medal, col_info = st.columns([1, 6])
-    
+
     with col_medal:
         medallas = ['🥇', '🥈', '🥉']
         st.markdown(
             f"<div style='font-size:6rem;text-align:center;'>{medallas[idx-1]}</div>",
             unsafe_allow_html=True
         )
-    
+
     with col_info:
         st.markdown(f"## {menu['nombre']}")
         st.caption(f"**{menu['tipo'].title()}** • {menu['plato_principal']}")
-    
+
     st.markdown("---")
-    
+
     # MÉTRICAS DEL MENÚ
     desglose = menu['desglose']
-    
+
     col1, col2, col3, col4 = st.columns(4)
-    
+
     col1.metric("🩸 Hierro", f"{desglose['hierro_mg']:.1f} mg")
     col2.metric("💰 Costo", f"S/ {desglose['costo_s']:.2f}")
     col3.metric("📊 Nutri-Score", f"{desglose['score_nutri']:.0f}/100")
     col4.metric("⭐ Score Total", f"{menu['score']:.0f}/100")
-    
+
     # BENEFICIO EDUCATIVO
     st.info(menu['beneficio_educativo'])
-    
+
     # RECETA COMPLETA (COLAPSABLE)
     with st.expander("🍳 **Ver Receta Completa**"):
         st.markdown("#### Ingredientes:")
@@ -572,16 +586,16 @@ def mostrar_detalle_menu(menu, idx, recomendador, motor_sustitucion, departament
             info = recomendador.catalogo_dict.get(ing['id'])
             if info:
                 st.markdown(f"- **{ing['cantidad_g']}g** de {info['nombre']}")
-        
+
         st.markdown(f"#### Preparación:")
         st.markdown(menu['preparacion'])
-    
+
     # ============================================
     # SUSTITUCIONES INLINE CON BADGE (100%)
     # ============================================
     st.markdown("---")
     st.markdown("### 🔄 Sustituciones Disponibles")
-    
+
     # Contar sustituciones disponibles
     num_sustituciones = 0
     for ing in menu['ingredientes']:
@@ -593,7 +607,7 @@ def mostrar_detalle_menu(menu, idx, recomendador, motor_sustitucion, departament
         )
         if sust and len(sust) > 0:
             num_sustituciones += 1
-    
+
     # ✅ BADGE DESTACADO (NUEVO - 100%)
     if num_sustituciones > 0:
         st.markdown(f"""
@@ -608,7 +622,7 @@ def mostrar_detalle_menu(menu, idx, recomendador, motor_sustitucion, departament
             </p>
         </div>
         """, unsafe_allow_html=True)
-        
+
         # MOSTRAR SUSTITUCIONES POR INGREDIENTE
         for ing in menu['ingredientes']:
             sust = motor_sustitucion.sugerir_sustituto(
@@ -617,21 +631,21 @@ def mostrar_detalle_menu(menu, idx, recomendador, motor_sustitucion, departament
                 presupuesto_max=presupuesto_diario / 2,
                 prioridad="hierro"
             )
-            
+
             if sust and len(sust) > 0:
                 info_ing = recomendador.catalogo_dict.get(ing['id'])
                 ing_nombre = info_ing['nombre'] if info_ing else ing['id']
-                
+
                 st.markdown(f"**En lugar de {ing_nombre}:**")
-                
+
                 # Hasta 3 sustitutos con botón "Usar"
                 for s_idx, sustituto in enumerate(sust[:3], 1):
                     col_sust, col_btn_sust = st.columns([5, 1])
-                    
+
                     with col_sust:
                         diferencia_costo = sustituto.get('costo_s', 0) - desglose['costo_s']
                         icono_costo = "🔻" if diferencia_costo < 0 else "🔺" if diferencia_costo > 0 else "➖"
-                        
+
                         st.markdown(f"""
                         <div style='background: #f8f9fa; padding: 1rem; border-radius: 8px; 
                                     margin: 0.5rem 0; border-left: 3px solid #28a745;'>
@@ -643,7 +657,7 @@ def mostrar_detalle_menu(menu, idx, recomendador, motor_sustitucion, departament
                             </span>
                         </div>
                         """, unsafe_allow_html=True)
-                    
+
                     with col_btn_sust:
                         if st.button(
                             "✅ Usar",
@@ -653,23 +667,23 @@ def mostrar_detalle_menu(menu, idx, recomendador, motor_sustitucion, departament
                         ):
                             st.success(f"✅ **Cambiado a {sustituto['nombre']}**")
                             st.info("💡 Recalcula el menú para ver el nuevo costo total")
-                
+
                 st.markdown("---")
-    
+
     else:
         st.info("""
         ✅ **Todos los ingredientes de este menú son esenciales.**  
         No hay sustitutos equivalentes sin comprometer valor nutricional.
         """)
-    
+
     # ============================================
     # ACCIONES (PDF Y WHATSAPP)
     # ============================================
     st.markdown("---")
     st.markdown("### 💾 Guardar o Compartir este Menú")
-    
+
     col_pdf, col_whats = st.columns(2)
-    
+
     with col_pdf:
         if st.button(
             f"📥 **Guardar este menú (PDF)**",
@@ -691,7 +705,7 @@ def mostrar_detalle_menu(menu, idx, recomendador, motor_sustitucion, departament
                         )
                 except Exception as e:
                     st.error(f"Error generando PDF: {e}")
-    
+
     with col_whats:
         if telefono_whatsapp:
             if st.button(

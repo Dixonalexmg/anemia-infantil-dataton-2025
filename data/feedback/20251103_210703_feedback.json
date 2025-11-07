@@ -1,0 +1,9 @@
+{
+  "timestamp": "2025-11-03T21:07:03.504792",
+  "usuario": "demo_user",
+  "comprension": 4,
+  "texto_comprension": "Muy fácil",
+  "edad_paciente": 24,
+  "probabilidad_anemia": 0.35,
+  "nivel_riesgo": "RIESGO MODERADO"
+}
