@@ -339,5 +339,5 @@ def pagina_privacidad_roles():
     - **GDPR:** Conforme a estándares internacionales
     - **Última actualización:** 2025-11-03
 
-    Para consultas sobre privacidad: **privacidad@nutrisenseIA.pe**
+    Para consultas sobre privacidad: **privacidad@NutriWawa.pe**
     """)

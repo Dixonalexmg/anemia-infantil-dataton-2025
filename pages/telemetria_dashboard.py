@@ -35,7 +35,7 @@ def pagina_telemetria_dashboard():
             📊 Dashboard de Telemetría
         </h1>
         <p style='color: rgba(255,255,255,0.95); margin: 0.8rem 0 0 0; font-size: 1.1rem;'>
-            Métricas en tiempo real del sistema NutriSenseIA
+            Métricas en tiempo real del sistema NutriWawa
         </p>
     </div>
     """, unsafe_allow_html=True)

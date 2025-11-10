@@ -261,7 +261,7 @@ def pagina_reportes_entidad_decisiones():
     - Datos actualizados: 03/Nov/2025
     - Cobertura: 3 regiones prioritarias
     - Próxima revisión: 10/Nov/2025
-    - Modelo: NutriSenseIA v1.0 - Datatón MINSA 2025
+    - Modelo: NutriWawa v1.0 - Datatón MINSA 2025
     """)
 
 

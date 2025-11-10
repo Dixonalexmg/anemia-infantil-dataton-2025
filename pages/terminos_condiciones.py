@@ -11,7 +11,7 @@ def pagina_terminos_condiciones():
     st.markdown("""
     # 📜 Términos y Condiciones
 
-    **NutriSenseIA - Sistema de Prevención de Anemia Infantil**
+    **NutriWawa - Sistema de Prevención de Anemia Infantil**
 
     Datatón 2025 | Ministerio de Salud del Perú
 
@@ -19,13 +19,13 @@ def pagina_terminos_condiciones():
 
     ## 1. Aceptación de Términos
 
-    Al acceder y utilizar NutriSenseIA, aceptas cumplir con estos 
+    Al acceder y utilizar NutriWawa, aceptas cumplir con estos 
     términos y condiciones en su totalidad.
 
 
     ## 2. Descripción del Servicio
 
-    NutriSenseIA es un sistema de demostración diseñado para:
+    NutriWawa es un sistema de demostración diseñado para:
 
     - Evaluar riesgo de anemia en niños menores de 5 años
     - Proporcionar recomendaciones de nutrición

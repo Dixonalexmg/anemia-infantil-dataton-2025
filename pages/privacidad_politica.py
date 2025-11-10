@@ -11,7 +11,7 @@ def pagina_privacidad_politica():
     st.markdown("""
     # 📋 Política de Privacidad
 
-    **NutriSenseIA - Sistema de Prevención de Anemia Infantil**
+    **NutriWawa - Sistema de Prevención de Anemia Infantil**
 
     Datatón 2025 | Ministerio de Salud del Perú
 
@@ -19,7 +19,7 @@ def pagina_privacidad_politica():
 
     ## 1. Introducción
 
-    NutriSenseIA es un sistema de demostración desarrollado para el Datatón 2025 
+    NutriWawa es un sistema de demostración desarrollado para el Datatón 2025 
     del Ministerio de Salud del Perú. Este documento describe cómo manejamos 
     la privacidad y protección de datos.
 

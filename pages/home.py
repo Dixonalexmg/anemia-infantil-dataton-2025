@@ -38,7 +38,7 @@ def pagina_inicio():
             {saludo}, {username} {emoji_hora}
         </h1>
         <p style='color: rgba(255,255,255,0.95); margin: 0.8rem 0 0 0; font-size: 1.2rem;'>
-            Te saluda NutriSenseIA, tu asistente inteligente contra la anemia infantil
+            Te saluda NutriWawa, tu asistente inteligente contra la anemia infantil
         </p>
     </div>
     """, unsafe_allow_html=True)
@@ -185,7 +185,7 @@ def pagina_inicio():
     st.markdown("---")
 
 
-    st.markdown("### 📊 Impacto de NutriSenseIA a nivel nacional")
+    st.markdown("### 📊 Impacto de NutriWawa a nivel nacional")
 
 
     col_stat1, col_stat2, col_stat3, col_stat4 = st.columns(4)
@@ -210,7 +210,7 @@ def pagina_inicio():
     st.markdown("---")
 
 
-    with st.expander("ℹ️ **¿Cómo funciona NutriSenseIA?**"):
+    with st.expander("ℹ️ **¿Cómo funciona NutriWawa?**"):
         col_info1, col_info2 = st.columns(2)
 
 
@@ -276,7 +276,7 @@ def pagina_inicio():
     with col2:
         st.markdown("""
         <div style='text-align: center;'>
-            <strong>🩺 NutriSenseIA</strong><br>
+            <strong>🩺 NutriWawa</strong><br>
             <span style='font-size: 0.9rem; color: #666;'>Sistema de Prevención de Anemia Infantil</span><br>
             <span style='font-size: 0.8rem; color: #999;'>Datatón 2025 | Ministerio de Salud del Perú</span>
         </div>

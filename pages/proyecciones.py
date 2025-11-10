@@ -135,7 +135,7 @@ def pagina_proyecciones():
 
         if not sigue_menu_actual:
             sigue_menu_mejora = st.checkbox(
-                "✅ Seguir menú NutriSenseIA",
+                "✅ Seguir menú NutriWawa",
                 value=True,
                 key="menu_mejora",
                 help="Menú personalizado con hierro hemo"
@@ -592,7 +592,7 @@ def generar_pdf_plan(hb_actual, hb_proyectada, edad_meses,
 
         # Título principal
         story.append(Paragraph("🩺 Plan de Intervención para Anemia Infantil", title_style))
-        story.append(Paragraph("NutriSenseIA - Sistema de Prevención", styles['Normal']))
+        story.append(Paragraph("NutriWawa - Sistema de Prevención", styles['Normal']))
         story.append(Spacer(1, 0.2*inch))
 
         # ====== SECCIÓN 1: INFORMACIÓN DEL NIÑO ======
@@ -671,7 +671,7 @@ def generar_pdf_plan(hb_actual, hb_proyectada, edad_meses,
         story.append(Paragraph("⚠️ Aviso Legal y Disclaimer", subtitle_style))
 
         disclaimer = """
-        Este documento es generado automáticamente por <b>NutriSenseIA</b>, un sistema de demostración 
+        Este documento es generado automáticamente por <b>NutriWawa</b>, un sistema de demostración 
         desarrollado para el <b>Datatón 2025 del Ministerio de Salud del Perú</b>.
         <br/><br/>
         <b>IMPORTANTE:</b> 
@@ -685,11 +685,11 @@ def generar_pdf_plan(hb_actual, hb_proyectada, edad_meses,
         • Siempre consulte con un profesional de salud calificado antes de realizar cambios en la alimentación 
         o suplementación del niño.
         <br/>
-        • NutriSenseIA y sus desarrolladores no son responsables por decisiones médicas basadas en este documento.
+        • NutriWawa y sus desarrolladores no son responsables por decisiones médicas basadas en este documento.
         <br/><br/>
         <b>Fecha de generación:</b> {datetime.now().strftime('%d/%m/%Y %H:%M')}
         <br/>
-        <b>Sistema:</b> NutriSenseIA v1.0 - Datatón 2025
+        <b>Sistema:</b> NutriWawa v1.0 - Datatón 2025
         """
 
         story.append(Paragraph(disclaimer, styles['Normal']))

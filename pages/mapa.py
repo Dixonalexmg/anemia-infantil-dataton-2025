@@ -584,7 +584,7 @@ def generar_reporte_pdf_rol(rol, df_territorial, hotspots, departamento, mes):
             story.append(Paragraph("📈 Acciones Estratégicas:", heading_style))
             story.append(Paragraph(
                 "• Asignar recursos prioritarios a hotspots<br/>"
-                "• Implementar NutriSenseIA en zonas críticas<br/>"
+                "• Implementar NutriWawa en zonas críticas<br/>"
                 "• Monitoreo mensual de indicadores<br/>"
                 "• Capacitación de personal de salud",
                 styles['Normal']
@@ -602,7 +602,7 @@ def generar_reporte_pdf_rol(rol, df_territorial, hotspots, departamento, mes):
 
             story.append(Paragraph("✅ ¿Qué puedes hacer?", heading_style))
             story.append(Paragraph(
-                "• Seguir los menús personalizados de NutriSenseIA<br/>"
+                "• Seguir los menús personalizados de NutriWawa<br/>"
                 "• Dar el suplemento de hierro diariamente al niño<br/>"
                 "• Incluir limón o naranja en las comidas<br/>"
                 "• Asistir a los controles de crecimiento mensuales<br/>"
@@ -613,7 +613,7 @@ def generar_reporte_pdf_rol(rol, df_territorial, hotspots, departamento, mes):
         # ✅ FOOTER
         story.append(Spacer(1, 0.3*inch))
         story.append(Paragraph(
-            "NutriSenseIA - Sistema de Prevención de Anemia Infantil | "
+            "NutriWawa - Sistema de Prevención de Anemia Infantil | "
             "MINSA - Datatón 2025",
             styles['Normal']
         ))

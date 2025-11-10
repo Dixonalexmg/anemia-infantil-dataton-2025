@@ -1,6 +1,6 @@
 # pages/metricas_impacto.py
 """
-Panel de Impacto: Comparación de zonas con/sin intervención NutriSenseIA
+Panel de Impacto: Comparación de zonas con/sin intervención NutriWawa
 KPIs de éxito del proyecto
 """
 
@@ -21,7 +21,7 @@ def pagina_metricas_impacto():
         <div style='display: flex; align-items: center; gap: 1rem;'>
             <div style='font-size: 3rem;'>📊</div>
             <div>
-                <h1 style='color: white; margin: 0;'>Panel de Impacto NutriSenseIA</h1>
+                <h1 style='color: white; margin: 0;'>Panel de Impacto NutriWawa</h1>
                 <p style='color: rgba(255,255,255,0.9); margin: 0.5rem 0 0 0;'>
                     Comparación de zonas con y sin intervención
                 </p>
@@ -36,7 +36,7 @@ def pagina_metricas_impacto():
         zona_control = st.selectbox("Zona de Control (sin intervención)", 
                                     ["HUANCAVELICA - Acobamba", "PUNO - Azángaro", "CUSCO - Chumbivilcas"])
     with col2:
-        zona_intervencion = st.selectbox("Zona de Intervención (con NutriSenseIA)",
+        zona_intervencion = st.selectbox("Zona de Intervención (con NutriWawa)",
                                          ["LIMA - San Juan de Lurigancho", "AREQUIPA - Cayma", "JUNIN - Huancayo"])
     
     periodo = st.selectbox("Período de análisis", ["Últimos 3 meses", "Últimos 6 meses", "Último año"])
@@ -134,7 +134,7 @@ def pagina_metricas_impacto():
         x=df_comparacion['Fecha'],
         y=df_comparacion['Intervención - Adherencia'],
         mode='lines+markers',
-        name='Zona con NutriSenseIA',
+        name='Zona con NutriWawa',
         line=dict(color='#11998e', width=3)
     ))
     
@@ -168,7 +168,7 @@ def pagina_metricas_impacto():
         x=df_comparacion['Fecha'],
         y=df_comparacion['Intervención - Riesgo Alto'],
         mode='lines+markers',
-        name='Zona con NutriSenseIA',
+        name='Zona con NutriWawa',
         line=dict(color='red', width=3),
         fill='tozeroy',
         fillcolor='rgba(255,100,100,0.2)'

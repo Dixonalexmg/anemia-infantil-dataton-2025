@@ -13,7 +13,7 @@ from utils.adherencia import calcular_adherencia_global
 def pagina_metricas_comprension():
     """Dashboard de métricas clave del producto"""
     
-    st.title("📊 Métricas de Producto - NutriSenseIA")
+    st.title("📊 Métricas de Producto - NutriWawa")
     st.markdown("**KPIs clave para medir el impacto del sistema**")
     
     st.markdown("---")

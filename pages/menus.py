@@ -1,6 +1,6 @@
 # pages/menus.py
 """
-HU-02: Menús Personalizados NutriSenseIA - VERSIÓN 100% PROFESIONAL
+HU-02: Menús Personalizados NutriWawa - VERSIÓN 100% PROFESIONAL
 Cumplimiento total de recomendaciones técnicas finales
 
 Características implementadas:

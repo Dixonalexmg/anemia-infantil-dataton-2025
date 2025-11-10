@@ -23,7 +23,7 @@ st.set_page_config(
     menu_items={
         'Get Help': 'https://www.minsa.gob.pe',
         'Report a bug': None,
-        'About': "NutriSenseIA - Datatón 2025"
+        'About': "NutriWawa - Datatón 2025"
     }
 )
 
@@ -171,7 +171,7 @@ def pagina_login():
 
         st.markdown("---")
         st.caption("""
-        🩺 **NutriSenseIA** - Sistema de Prevención de Anemia Infantil
+        🩺 **NutriWawa** - Sistema de Prevención de Anemia Infantil
 
         Datatón 2025 | Ministerio de Salud del Perú
         """)
@@ -213,7 +213,6 @@ def mostrar_sidebar():
              ("📍 Decisiones Entidad", "decisiones"),
             ("🗺️ Mapa Territorial", "mapa"),
             ("📊 Telemetría", "telemetria"),
-            ("🔍 Explicabilidad del Modelo", "explicabilidad"),
         ]
 
         current_page = st.session_state.pagina_actual

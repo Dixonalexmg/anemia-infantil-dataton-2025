@@ -1,0 +1,6 @@
+﻿Rango de Probabilidad,Nivel de Riesgo,Color Semáforo,Protocolo de Intervención,Recursos Necesarios,Frecuencia de Seguimiento,Prevalencia Estimada,Costo por Caso (S/)
+[0.00 - 0.20),Muy Bajo,Verde,Seguimiento de rutina (CRED mensual),Personal: Técnico de enfermería | Tiempo: 15 min | Insumos: Ninguno adicional,Cada 3 meses,65-70%,10
+[0.20 - 0.40),Bajo,Amarillo,Monitoreo reforzado + consejería nutricional,Personal: Nutricionista | Tiempo: 30 min | Insumos: Material educativo,Cada 2 meses,15-20%,35
+[0.40 - 0.60),Moderado,Naranja,Evaluación HemoCue + suplementación preventiva,"Personal: Enfermera + Nutricionista | Tiempo: 45 min | Insumos: HemoCue, suplementos",Mensual,5-8%,85
+[0.60 - 0.80),Alto,Rojo,Intervención intensiva + seguimiento semanal,"Personal: Médico + Nutricionista | Tiempo: 60 min | Insumos: HemoCue, suplementos, recetas",Quincenal,3-5%,150
+[0.80 - 1.00],Muy Alto,Rojo Crítico,Acción inmediata + derivación a especialista,"Personal: Equipo multidisciplinario | Tiempo: 90 min | Insumos: Análisis completo, derivación",Semanal,2-3%,280

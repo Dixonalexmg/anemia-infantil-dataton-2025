@@ -275,7 +275,7 @@ def pagina_explicabilidad():
         - Qué alimentos come
         - Lactancia materna
 
-        Por eso NutriSenseIA ajusta los umbrales PARA TI.
+        Por eso NutriWawa ajusta los umbrales PARA TI.
         """)
 
     with st.expander("¿Qué hago si me sale 'Riesgo Moderado'?"):
@@ -300,5 +300,5 @@ def pagina_explicabilidad():
     - Modelo desarrollado para Datatón 2025 - Ministerio de Salud del Perú
     - Validación: Estudios MINSA 2023, criterios OMS
     - Objetivo: Detección temprana de anemia en menores de 5 años
-    - Sistema: NutriSenseIA - Prevención Adaptativa de Anemia Infantil
+    - Sistema: NutriWawa - Prevención Adaptativa de Anemia Infantil
     """)
